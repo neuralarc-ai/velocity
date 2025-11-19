@@ -5,6 +5,8 @@ import InputSection from './input-section'
 import OutputSection from './output-section'
 import StatusGrid from './status-grid'
 import ReportsSection from './reports-section'
+import { useToast } from '@/hooks/use-toast'
+import { ToastContainer } from './toast'
 
 export default function MainPanel() {
   const [prompt, setPrompt] = useState('')
@@ -13,12 +15,13 @@ export default function MainPanel() {
   const [showStatus, setShowStatus] = useState(false)
   const [showReports, setShowReports] = useState(false)
   const [outputStatus, setOutputStatus] = useState('')
+  const { toasts, showError, removeToast } = useToast()
 
   const handleGenerate = async () => {
     const promptValue = prompt.trim()
     
     if (!promptValue) {
-      alert('Please enter a prompt')
+      showError('Please enter a prompt')
       return
     }
 
@@ -68,23 +71,26 @@ export default function MainPanel() {
   }
 
   return (
-    <div className="main-panel">
-      <InputSection
-        prompt={prompt}
-        onPromptChange={setPrompt}
-        onGenerate={handleGenerate}
-        onClear={handleClear}
-        isGenerating={isGenerating}
-      />
-      
-      {showOutput && (
-        <OutputSection outputStatus={outputStatus} />
-      )}
+    <>
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
+      <div className="main-panel">
+        <InputSection
+          prompt={prompt}
+          onPromptChange={setPrompt}
+          onGenerate={handleGenerate}
+          onClear={handleClear}
+          isGenerating={isGenerating}
+        />
+        
+        {showOutput && (
+          <OutputSection outputStatus={outputStatus} />
+        )}
 
-      {showStatus && <StatusGrid />}
+        {showStatus && <StatusGrid />}
 
-      {showReports && <ReportsSection />}
-    </div>
+        {showReports && <ReportsSection />}
+      </div>
+    </>
   )
 }
 

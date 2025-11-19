@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import Header from '@/components/header'
 import Footer from '@/components/footer'
 import MainPanel from '@/components/main-panel'
 import Sidebar from '@/components/sidebar'
-import { PanelRight } from 'lucide-react'
+import { RiMenuLine } from 'react-icons/ri'
 
 export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -49,7 +49,7 @@ export default function Home() {
               onClick={() => setSidebarOpen(true)}
               aria-label="Toggle sidebar"
             >
-              <PanelRight />
+              <RiMenuLine />
             </button>
 
             <MainPanel />

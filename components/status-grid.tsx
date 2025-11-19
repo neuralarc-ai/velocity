@@ -1,13 +1,13 @@
 'use client'
 
-import { PieChart, ShieldCheck, AlertTriangle, DollarSign } from 'lucide-react'
+import { RiPieChartLine, RiShieldCheckLine, RiErrorWarningLine, RiMoneyDollarCircleLine } from 'react-icons/ri'
 
 export default function StatusGrid() {
   return (
     <div className="status-grid" id="statusGrid">
       <div className="bento-card status-card">
         <div className="card-icon">
-          <PieChart />
+          <RiPieChartLine />
         </div>
         <h3>Attribution</h3>
         <div className="status-value" id="attributionStatus">
@@ -18,7 +18,7 @@ export default function StatusGrid() {
 
       <div className="bento-card status-card">
         <div className="card-icon">
-          <ShieldCheck />
+          <RiShieldCheckLine />
         </div>
         <h3>Safety Check</h3>
         <div className="status-value" id="safetyStatus">
@@ -29,7 +29,7 @@ export default function StatusGrid() {
 
       <div className="bento-card status-card">
         <div className="card-icon">
-          <AlertTriangle />
+          <RiErrorWarningLine />
         </div>
         <h3>Contamination</h3>
         <div className="status-value" id="contaminationStatus">
@@ -40,7 +40,7 @@ export default function StatusGrid() {
 
       <div className="bento-card status-card">
         <div className="card-icon">
-          <DollarSign />
+          <RiMoneyDollarCircleLine />
         </div>
         <h3>Monetization</h3>
         <div className="status-value" id="monetizationStatus">

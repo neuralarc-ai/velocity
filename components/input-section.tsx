@@ -1,6 +1,6 @@
 'use client'
 
-import { Edit3, Play, X, Loader } from 'lucide-react'
+import { RiEditLine, RiPlayLine, RiCloseLine, RiLoader4Line } from 'react-icons/ri'
 
 interface InputSectionProps {
   prompt: string
@@ -20,7 +20,7 @@ export default function InputSection({
   return (
     <section className="input-section bento-card">
       <div className="section-header">
-        <Edit3 />
+        <RiEditLine />
         <h2>Prompt Input</h2>
       </div>
       <div className="input-group">
@@ -38,11 +38,11 @@ export default function InputSection({
             onClick={onGenerate}
             disabled={isGenerating}
           >
-            {isGenerating ? <Loader className="animate-spin" /> : <Play />}
+            {isGenerating ? <RiLoader4Line className="animate-spin" /> : <RiPlayLine />}
             {isGenerating ? 'Processing...' : 'Generate'}
           </button>
           <button className="btn btn-secondary" onClick={onClear}>
-            <X />
+            <RiCloseLine />
             Clear
           </button>
         </div>

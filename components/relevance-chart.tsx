@@ -8,6 +8,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  type TooltipItem,
 } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
 
@@ -83,8 +84,10 @@ export default function RelevanceChart({ data }: RelevanceChartProps) {
       },
       tooltip: {
         callbacks: {
-          label: function(context: { parsed: { y: number } }) {
-            return 'Attribution: ' + context.parsed.y + '%'
+          label: function(context: TooltipItem<'bar'>) {
+            const value = context.parsed.y
+            if (value === null) return 'Attribution: 0%'
+            return 'Attribution: ' + value + '%'
           }
         }
       }

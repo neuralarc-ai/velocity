@@ -1,6 +1,19 @@
 'use client'
 
-import { BarChart3, PieChart, AlertCircle, ShieldCheck, FileCheck, Video, DollarSign, CheckCircle, Info, Check, Percent, Shield } from 'lucide-react'
+import { 
+  RiBarChartLine, 
+  RiPieChartLine, 
+  RiErrorWarningLine, 
+  RiShieldCheckLine, 
+  RiFileCheckLine, 
+  RiVideoLine, 
+  RiMoneyDollarCircleLine, 
+  RiCheckboxCircleLine, 
+  RiInformationLine, 
+  RiCheckLine, 
+  RiPercentLine, 
+  RiShieldLine 
+} from 'react-icons/ri'
 import AttributionChart from './attribution-chart'
 import RelevanceChart from './relevance-chart'
 
@@ -22,7 +35,7 @@ export default function ReportsSection() {
       <div className="reports-grid">
         <div className="bento-card report-card">
           <div className="section-header">
-            <BarChart3 />
+            <RiBarChartLine />
             <h2>Initial Attribution (Pre-Generation)</h2>
           </div>
           <div className="chart-container">
@@ -42,7 +55,7 @@ export default function ReportsSection() {
 
         <div className="bento-card report-card">
           <div className="section-header">
-            <PieChart />
+            <RiPieChartLine />
             <h2>Final Attribution (Post-Generation)</h2>
           </div>
           <div className="chart-container">
@@ -63,14 +76,14 @@ export default function ReportsSection() {
 
       <div className="bento-card report-card full-width">
         <div className="section-header">
-          <AlertCircle />
+          <RiErrorWarningLine />
           <h2>Contamination Analysis Report</h2>
         </div>
         <div className="report-content">
           <div className="contamination-overview">
             <div className="contamination-metric">
               <div className="metric-icon">
-                <Percent />
+                <RiPercentLine />
               </div>
               <div className="metric-content">
                 <div className="metric-value">0.5%</div>
@@ -79,7 +92,7 @@ export default function ReportsSection() {
             </div>
             <div className="contamination-metric">
               <div className="metric-icon">
-                <CheckCircle />
+                <RiCheckboxCircleLine />
               </div>
               <div className="metric-content">
                 <div className="metric-value">99.5%</div>
@@ -88,7 +101,7 @@ export default function ReportsSection() {
             </div>
             <div className="contamination-metric">
               <div className="metric-icon">
-                <Shield />
+                <RiShieldLine />
               </div>
               <div className="metric-content">
                 <div className="metric-value">Passed</div>
@@ -100,19 +113,19 @@ export default function ReportsSection() {
             <h4>Detection Summary</h4>
             <ul className="detail-list">
               <li>
-                <Check />
+                <RiCheckLine />
                 <span>Contamination level within acceptable threshold (&lt; 2%)</span>
               </li>
               <li>
-                <Check />
+                <RiCheckLine />
                 <span>No unlicensed IP detected in output</span>
               </li>
               <li>
-                <Check />
+                <RiCheckLine />
                 <span>Model influence properly tracked and documented</span>
               </li>
               <li>
-                <Info />
+                <RiInformationLine />
                 <span>Minimal training data influence from base model</span>
               </li>
             </ul>
@@ -122,25 +135,25 @@ export default function ReportsSection() {
 
       <div className="bento-card report-card full-width">
         <div className="section-header">
-          <ShieldCheck />
+          <RiShieldCheckLine />
           <h2>IP Safety & Compliance Report</h2>
         </div>
         <div className="report-content">
           <div className="compliance-grid">
             <div className="compliance-section">
               <h4>
-                <FileCheck />
+                <RiFileCheckLine />
                 Pre-Generation Checks
               </h4>
               <div className="check-item passed">
-                <CheckCircle />
+                <RiCheckboxCircleLine />
                 <div className="check-content">
                   <div className="check-title">Prompt Safety Validation</div>
                   <div className="check-detail">No IP safety rule violations detected</div>
                 </div>
               </div>
               <div className="check-item passed">
-                <CheckCircle />
+                <RiCheckboxCircleLine />
                 <div className="check-content">
                   <div className="check-title">Usage Rights Verification</div>
                   <div className="check-detail">All retrieved content properly licensed</div>
@@ -150,18 +163,18 @@ export default function ReportsSection() {
 
             <div className="compliance-section">
               <h4>
-                <Video />
+                <RiVideoLine />
                 Post-Generation Checks
               </h4>
               <div className="check-item passed">
-                <CheckCircle />
+                <RiCheckboxCircleLine />
                 <div className="check-content">
                   <div className="check-title">Visual Content Analysis</div>
                   <div className="check-detail">Output complies with IP mythology rules</div>
                 </div>
               </div>
               <div className="check-item passed">
-                <CheckCircle />
+                <RiCheckboxCircleLine />
                 <div className="check-content">
                   <div className="check-title">Character Behavior Validation</div>
                   <div className="check-detail">No prohibited actions detected</div>
@@ -171,18 +184,18 @@ export default function ReportsSection() {
 
             <div className="compliance-section">
               <h4>
-                <DollarSign />
+                <RiMoneyDollarCircleLine />
                 Monetization Status
               </h4>
               <div className="check-item passed">
-                <CheckCircle />
+                <RiCheckboxCircleLine />
                 <div className="check-content">
                   <div className="check-title">Attribution Complete</div>
                   <div className="check-detail">All IP sources properly attributed</div>
                 </div>
               </div>
               <div className="check-item passed">
-                <CheckCircle />
+                <RiCheckboxCircleLine />
                 <div className="check-content">
                   <div className="check-title">Release Approved</div>
                   <div className="check-detail">Content cleared for monetization</div>
@@ -193,7 +206,7 @@ export default function ReportsSection() {
 
           <div className="compliance-summary">
             <div className="summary-badge success">
-              <ShieldCheck />
+              <RiShieldCheckLine />
               <span>All Compliance Checks Passed</span>
             </div>
           </div>

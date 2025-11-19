@@ -48,7 +48,7 @@ export default function AttributionChart({ data }: AttributionChartProps) {
           padding: 15,
           font: {
             size: 13,
-            weight: '500' as const
+            weight: 500
           }
         }
       },

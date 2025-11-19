@@ -923,3 +923,169 @@ textarea:focus {
     background-color: var(--color-gray-900);
 }
 
+/* ===================================
+   Toast Notifications
+   =================================== */
+.toast-container {
+    position: fixed;
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    max-width: 400px;
+    pointer-events: none;
+}
+
+.toast {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background-color: var(--color-white);
+    border: 2px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    pointer-events: auto;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all var(--transition-base);
+}
+
+.toast-visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.toast-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.toast-message {
+    flex: 1;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-900);
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    color: var(--color-gray-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+}
+
+.toast-close:hover {
+    background-color: var(--color-gray-100);
+    color: var(--color-black);
+}
+
+.toast-close svg {
+    width: 16px;
+    height: 16px;
+}
+
+.toast-error {
+    border-left: 4px solid var(--color-black);
+}
+
+.toast-error .toast-icon {
+    color: var(--color-black);
+}
+
+.toast-success {
+    border-left: 4px solid var(--color-gray-900);
+}
+
+.toast-success .toast-icon {
+    color: var(--color-gray-900);
+}
+
+.toast-info {
+    border-left: 4px solid var(--color-gray-700);
+}
+
+.toast-info .toast-icon {
+    color: var(--color-gray-700);
+}
+
+.toast-warning {
+    border-left: 4px solid var(--color-gray-600);
+}
+
+.toast-warning .toast-icon {
+    color: var(--color-gray-600);
+}
+
+/* ===================================
+   Error Boundary
+   =================================== */
+.error-boundary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    padding: var(--spacing-xl);
+}
+
+.error-boundary-content {
+    text-align: center;
+    max-width: 500px;
+    padding: var(--spacing-xl);
+    background-color: var(--color-white);
+    border: 2px solid var(--color-gray-200);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+}
+
+.error-boundary-content .error-icon {
+    width: 64px;
+    height: 64px;
+    color: var(--color-black);
+    margin: 0 auto var(--spacing-md);
+}
+
+.error-boundary-content h2 {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--spacing-md);
+    color: var(--color-black);
+}
+
+.error-message {
+    font-size: var(--font-size-base);
+    color: var(--color-gray-600);
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-md);
+    background-color: var(--color-gray-100);
+    border-radius: var(--radius-md);
+}
+
+/* ===================================
+   Output Status Items
+   =================================== */
+.status-item {
+    margin-bottom: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+}
+
+.status-item:last-child {
+    margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    .toast-container {
+        top: var(--spacing-md);
+        right: var(--spacing-md);
+        left: var(--spacing-md);
+        max-width: none;
+    }
+}
+
