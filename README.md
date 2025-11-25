@@ -1,119 +1,76 @@
-# Velocity - IP Attribution & Safety Platform
+# Strand AI PoC - Milestone 1 (Next.js/React)
 
-A Next.js application for IP attribution and safety platform, converted from a vanilla HTML/CSS/JS prototype.
+## Overview
+Proof-of-Concept demonstration of Strand AI's core capabilities for tracking licensed IP usage in AI-generated video content. This is the Milestone 1 implementation built with Next.js and React.
 
 ## Features
+- ✅ **User Prompt Input** - Enter any prompt (not hardcoded)
+- ✅ **5 Distinct Video Examples** - Each with unique hardcoded outputs
+- ✅ **Smart Prompt Matching** - Automatically matches prompts to examples
+- ✅ **Database Integration** - Real-time data storage and statistics
+- ✅ **Pipeline execution framework** - All 10 steps with hardcoded results
+- ✅ **Real-time execution logging** - Complete audit trail
+- ✅ **Attribution score display** - Initial and final attribution
+- ✅ **Safety check visualization** - Pre and post-generation checks
+- ✅ **Modern, responsive UI** - Beautiful Tailwind CSS interface
 
-- **Prompt Input**: Enter creative prompts for content generation
-- **Real-time Processing**: Simulated content generation with process tracing
-- **Attribution Tracking**: Pre and post-generation IP attribution analysis
-- **Safety Checks**: Pre and post-generation IP safety validation
-- **Contamination Detection**: Model contamination analysis
-- **Compliance Reports**: Comprehensive compliance and monetization status
-- **Process Tracing**: Real-time sidebar showing generation process steps
-- **Responsive Design**: Mobile-friendly interface with collapsible sidebar
-
-## Tech Stack
-
-- **Next.js 14** - React framework with App Router
-- **TypeScript** - Type-safe development
-- **Chart.js** - Data visualization for attribution reports
-- **Lucide React** - Icon library
-- **CSS Modules** - Scoped styling
-
-## Getting Started
+## Quick Start
 
 ### Prerequisites
-
 - Node.js 18+ 
 - npm or yarn
 
 ### Installation
-
-1. Install dependencies:
 ```bash
+# Install dependencies
 npm install
-```
 
-2. Run the development server:
-```bash
+# Run development server
 npm run dev
 ```
 
-3. Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Build for Production
-
-```bash
-npm run build
-npm start
-```
+### Run Demo
+1. Enter a prompt (e.g., "athlete wearing Nike shoes" or "people drinking Coca-Cola")
+2. Click "Run Pipeline" button
+3. System matches your prompt to one of 5 video examples
+4. Watch the 10-step pipeline execute in real-time
+5. View hardcoded results specific to your matched example
+6. Check database statistics and execution history
 
 ## Project Structure
-
 ```
-velocity/
-├── app/
-│   ├── layout.tsx          # Root layout
-│   ├── page.tsx             # Main page
-│   └── globals.css          # Global styles
-├── components/
-│   ├── header.tsx           # Header component
-│   ├── footer.tsx           # Footer component
-│   ├── main-panel.tsx       # Main content panel
-│   ├── input-section.tsx    # Prompt input section
-│   ├── output-section.tsx   # Generated output section
-│   ├── status-grid.tsx      # Status cards grid
-│   ├── reports-section.tsx  # Detailed reports
-│   ├── attribution-chart.tsx # Attribution pie chart
-│   ├── relevance-chart.tsx  # Relevance bar chart
-│   └── sidebar.tsx          # Process trace sidebar
-├── package.json
-├── tsconfig.json
-└── next.config.js
+strand-ai-poc/
+├── app/                    # Next.js app directory
+│   ├── page.tsx           # Main demo page
+│   └── layout.tsx          # Root layout
+├── components/             # React components
+│   ├── Pipeline/          # Pipeline components
+│   ├── Results/           # Results display
+│   └── UI/                # Shared UI components
+├── lib/                    # Core logic
+│   ├── pipeline.ts        # Pipeline execution
+│   ├── models.ts          # TypeScript models
+│   └── logger.ts          # Logging system
+├── data/                   # Data directory
+│   └── preloaded/         # Pre-loaded assets
+└── public/                 # Static assets
 ```
 
-## Usage
+## Milestone 1 Deliverables
+- ✅ Working pipeline with all 10 steps
+- ✅ User prompt input (not hardcoded)
+- ✅ 5 distinct video examples with unique hardcoded outputs
+- ✅ Smart prompt matching system
+- ✅ Database integration for real-time data
+- ✅ Execution logging system
+- ✅ Results display UI
+- ✅ Statistics and execution history
 
-1. Enter a creative prompt in the input field
-2. Click "Generate" to start the content generation process
-3. View the process trace in the sidebar (right side on desktop, toggle button on mobile)
-4. Review the generated output, status cards, and detailed reports
-5. Use "Clear" to reset and start over
-
-## Features in Detail
-
-### Attribution Analysis
-- Pre-generation attribution based on relevance scores
-- Post-generation attribution based on frame-by-frame analysis
-- Visual charts showing attribution percentages
-
-### Safety & Compliance
-- Pre-generation prompt safety validation
-- Post-generation content analysis
-- IP mythology rule compliance
-- Character behavior validation
-
-### Contamination Detection
-- Model contamination percentage tracking
-- Licensed content percentage
-- Threshold compliance checking
-
-## Development
-
-### Code Style
-- TypeScript strict mode enabled
-- ESLint configured for Next.js
-- Functional components with hooks
-- Type-safe props and state
-
-### Adding New Features
-1. Create new components in `components/` directory
-2. Use TypeScript for all new files
-3. Follow existing component patterns
-4. Update this README if adding major features
+## Documentation
+See the documentation files in the root directory for detailed information.
 
 ## License
-
-Copyright © 2025 Velocity. All rights reserved.
+Proprietary - Neural Arc Inc.
 

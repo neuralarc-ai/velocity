@@ -1,0 +1,39 @@
+# AI Model Configurations
+
+video_models:
+  ltx_video:
+    name: "LTX-Video"
+    api_endpoint: "${VIDEO_MODEL_ENDPOINT}"
+    api_key: "${VIDEO_MODEL_API_KEY}"
+    max_duration: 10  # seconds
+    resolution: "1080p"
+    aspect_ratio: "16:9"
+    default_params:
+      guidance_scale: 7.5
+      num_inference_steps: 50
+      seed: null  # Random if null
+    
+  mochi:
+    name: "Mochi 1"
+    api_endpoint: "${VIDEO_MODEL_ENDPOINT}"
+    api_key: "${VIDEO_MODEL_API_KEY}"
+    max_duration: 8
+    resolution: "720p"
+    aspect_ratio: "16:9"
+    default_params:
+      temperature: 0.7
+      top_p: 0.9
+
+analysis_models:
+  clip:
+    name: "CLIP ViT-L/14"
+    model_name: "openai/clip-vit-large-patch14"
+    device: "cuda"  # or "cpu"
+    batch_size: 8
+    
+  videomae:
+    name: "VideoMAE"
+    model_name: "MCG-NJU/videomae-base"
+    device: "cuda"
+    batch_size: 4
+

@@ -1,0 +1,59 @@
+# IP Safety Guardrail Rules
+
+safety_rules:
+  # Pre-Generation Rules
+  pre_generation:
+    - id: "no_unlicensed_ip"
+      name: "No Unlicensed IP"
+      description: "Block prompts referencing unlicensed IP"
+      severity: "critical"
+      action: "block"
+      enabled: true
+      
+    - id: "license_compliance"
+      name: "License Compliance Check"
+      description: "Verify license terms allow usage"
+      severity: "critical"
+      action: "block"
+      enabled: true
+      
+    - id: "restricted_brands"
+      name: "Restricted Brand Check"
+      description: "Block restricted brand mentions"
+      severity: "high"
+      action: "block"
+      enabled: true
+      restricted_list:
+        - "competitor_brand_1"
+        - "competitor_brand_2"
+  
+  # Post-Generation Rules
+  post_generation:
+    - id: "unauthorized_ip_detection"
+      name: "Unauthorized IP Detection"
+      description: "Detect unauthorized IP in generated content"
+      severity: "critical"
+      action: "flag"
+      enabled: true
+      
+    - id: "contamination_check"
+      name: "Model Contamination Check"
+      description: "Check for model contamination"
+      severity: "high"
+      threshold: 0.05  # 5% threshold
+      action: "flag"
+      enabled: true
+      
+    - id: "prompt_alignment"
+      name: "Prompt Alignment Check"
+      description: "Verify generated content aligns with prompt"
+      severity: "medium"
+      action: "warn"
+      enabled: true
+
+# Contamination detection settings
+contamination:
+  threshold: 0.05
+  check_frequency: "always"  # always, sample, never
+  sample_rate: 1.0  # 100% of videos
+
