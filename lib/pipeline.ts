@@ -25,6 +25,12 @@ export class StrandPipeline {
     // Match prompt to example
     const matchedExample = matchPromptToExample(prompt);
     
+    if (!matchedExample) {
+      const executionId = `exec-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      this.logger.logStepError('pipeline_execution', new Error('No matching example found'), { prompt });
+      return this.createFailureResult('No matching example found for the given prompt', {});
+    }
+    
     // Initialize execution state
     const executionId = `exec-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     this.state = {
@@ -235,7 +241,7 @@ export class StrandPipeline {
 
     const duration = Date.now() - startTime;
     this.updateState(stepName, duration, 'completed');
-    this.logger.logAttribution('initial', result);
+    this.logger.logAttribution('initial', result as unknown as Record<string, unknown>);
     this.logger.logStepEnd(stepName, duration);
     return result;
   }
@@ -362,7 +368,7 @@ export class StrandPipeline {
 
     const duration = Date.now() - startTime;
     this.updateState(stepName, duration, 'completed');
-    this.logger.logAttribution('final', result);
+    this.logger.logAttribution('final', result as unknown as Record<string, unknown>);
     this.logger.logStepEnd(stepName, duration);
     return result;
   }
@@ -411,7 +417,7 @@ export class StrandPipeline {
       },
     };
 
-    this.logger.logPipelineSummary(summary);
+    this.logger.logPipelineSummary(summary as unknown as Record<string, unknown>);
     this.logger.logStepEnd(stepName, 0);
     return summary;
   }

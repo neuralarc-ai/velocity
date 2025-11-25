@@ -91,8 +91,8 @@ export default function ExecutionLogs() {
                       Duration: {log.duration_ms.toFixed(2)}ms
                     </div>
                   )}
-                  {log.error && (
-                    <div className="text-xs mt-1 font-medium">Error: {log.error}</div>
+                  {log.error != null && (
+                    <div className="text-xs mt-1 font-medium">Error: {String(log.error)}</div>
                   )}
                 </div>
               ))}
