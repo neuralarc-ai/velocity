@@ -102,144 +102,9 @@ export default function ProcessTrace({ steps, currentStep }: ProcessTraceProps) 
     return status === 'Running';
   };
 
-  // Auto-scroll effect: scroll completed steps up (streaming effect)
-  useEffect(() => {
-    if (!scrollContainerRef.current || steps.length === 0) {
-      previousStepsRef.current = [...steps];
-      return;
-    }
-
-    // Check for newly completed steps
-    const newlyCompleted = steps.filter(
-      (step, index) => {
-        const prevStep = previousStepsRef.current[index];
-        return prevStep && 
-               !isStepCompleted(prevStep.status) && 
-               isStepCompleted(step.status);
-      }
-    );
-
-    // Update previous steps reference immediately to prevent loops
-    previousStepsRef.current = [...steps];
-
-    if (newlyCompleted.length > 0) {
-      // Clear any existing timeout
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
-
-      // Wait a bit for the completion animation, then scroll
-      scrollTimeoutRef.current = setTimeout(() => {
-        if (!scrollContainerRef.current) return;
-        
-        const container = scrollContainerRef.current;
-        const stepElements = container.querySelectorAll('[data-step-id]');
-        
-        // Find the first running or pending step (current active step)
-        const activeStepIndex = steps.findIndex(step => 
-          isStepRunning(step.status) || (!isStepCompleted(step.status) && !isStepRunning(step.status))
-        );
-
-        if (activeStepIndex >= 0 && stepElements[activeStepIndex]) {
-          const activeStepId = steps[activeStepIndex].id;
-          
-          // Only scroll if we haven't already scrolled to this step
-          if (lastScrolledStepRef.current !== activeStepId) {
-            // Scroll the active step to near the top of visible area
-            const targetElement = stepElements[activeStepIndex] as HTMLElement;
-            const containerRect = container.getBoundingClientRect();
-            const elementRect = targetElement.getBoundingClientRect();
-            
-            // Calculate scroll position to show active step near the top (100px from top)
-            const scrollOffset = elementRect.top - containerRect.top - 100;
-            
-            container.scrollTo({
-              top: container.scrollTop + scrollOffset,
-              behavior: 'smooth'
-            });
-            
-            lastScrolledStepRef.current = activeStepId;
-          }
-        } else {
-          // If all steps are completed, scroll to the bottom to show the last step fully
-          const allCompleted = steps.every(step => isStepCompleted(step.status));
-          if (allCompleted && stepElements.length > 0) {
-            const lastElement = stepElements[stepElements.length - 1] as HTMLElement;
-            if (lastElement) {
-              // Scroll to show the last step fully at the bottom
-              container.scrollTo({
-                top: container.scrollHeight - container.clientHeight,
-                behavior: 'smooth'
-              });
-            }
-          }
-        }
-      }, 600); // Wait 600ms after completion to show the checkmark
-    }
-
-    // Cleanup timeout on unmount
-    return () => {
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
-    };
-  }, [steps]);
-
-  // Scroll to current step when it changes (for running steps)
-  useEffect(() => {
-    if (!scrollContainerRef.current || !currentStep) return;
-
-    const container = scrollContainerRef.current;
-    const currentStepData = steps.find(s => s.id === currentStep);
-    
-    // Check if all steps are completed
-    const allCompleted = steps.length > 0 && steps.every(step => isStepCompleted(step.status));
-    
-    if (allCompleted) {
-      // If all steps are completed, scroll to the bottom to show the last step fully
-      setTimeout(() => {
-        if (scrollContainerRef.current) {
-          scrollContainerRef.current.scrollTo({
-            top: scrollContainerRef.current.scrollHeight - scrollContainerRef.current.clientHeight,
-            behavior: 'smooth'
-          });
-        }
-      }, 300);
-      return;
-    }
-
-    // Only auto-scroll if the step is running and we haven't already scrolled to it
-    if (!currentStepData || !isStepRunning(currentStepData.status)) return;
-    
-    // Prevent scrolling if we already scrolled to this step
-    if (lastScrolledStepRef.current === currentStep) return;
-
-    const activeElement = container.querySelector(`[data-step-id="${currentStep}"]`) as HTMLElement;
-    
-    if (activeElement) {
-      const containerRect = container.getBoundingClientRect();
-      const elementRect = activeElement.getBoundingClientRect();
-      
-      // Only scroll if element is not already in view
-      const isInView = elementRect.top >= containerRect.top && 
-                      elementRect.bottom <= containerRect.bottom;
-      
-      if (!isInView) {
-        // Scroll to show active step near the top of visible area (100px from top)
-        const scrollOffset = elementRect.top - containerRect.top - 100;
-        
-        container.scrollTo({
-          top: container.scrollTop + scrollOffset,
-          behavior: 'smooth'
-        });
-        
-        lastScrolledStepRef.current = currentStep;
-      }
-    }
-  }, [currentStep, steps]);
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 h-[calc(100vh-200px)] flex flex-col shadow-sm">
+    <div className="bg-white rounded-lg border border-gray-200 flex flex-col shadow-sm">
       {/* Header */}
       <div className="p-5 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
         <div className="flex items-center gap-3">
@@ -256,7 +121,7 @@ export default function ProcessTrace({ steps, currentStep }: ProcessTraceProps) 
       </div>
 
       {/* Steps Container */}
-      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-6 scroll-smooth">
+      <div ref={scrollContainerRef} className="flex-1 p-6 scroll-smooth">
         {steps.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center py-16">
             <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-4">

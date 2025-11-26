@@ -3,6 +3,30 @@
  * TypeScript models matching the Python Pydantic models
  */
 
+export interface VideoMetrics {
+  frames_analyzed: number;
+  embedding_matches: number;
+  [key: string]: any; // For any additional metrics
+}
+
+export interface VideoExample {
+  id: string;
+  results: {
+    video_metrics: VideoMetrics;
+    [key: string]: any; // For any other properties in results
+  };
+  title?: string;
+  description?: string;
+  videoUrl?: string;
+  thumbnailUrl?: string;
+  duration?: number;
+  resolution?: string;
+  metadata?: Record<string, unknown>;
+  createdAt?: string;
+  updatedAt?: string;
+  [key: string]: any; // For any additional properties
+}
+
 export interface IPContent {
   id: string;
   type: 'logo' | 'character' | 'music' | 'product';
