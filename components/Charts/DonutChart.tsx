@@ -144,12 +144,15 @@ export default function DonutChart({
             })}
           </svg>
           
-          {/* Center text */}
+          {/* Center text - shows only hovered segment percentage */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-gray-900">{total.toFixed(0)}%</div>
-              <div className="text-sm text-gray-500 mt-1">Total</div>
-            </div>
+            {hoveredIndex !== null && (
+              <div className="text-center">
+                <div className="text-2xl font-bold text-gray-900">
+                  {segments[hoveredIndex].value.toFixed(1)}%
+                </div>
+              </div>
+            )}
           </div>
         </div>
         

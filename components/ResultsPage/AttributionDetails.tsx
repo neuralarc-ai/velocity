@@ -1,6 +1,7 @@
 import BarChart from '@/components/Charts/BarChart';
 import DonutChart from '@/components/Charts/DonutChart';
-import { PipelineResult, VideoExample } from '@/lib/models';
+import { PipelineResult } from '@/lib/models';
+import { VideoExample } from '@/lib/examples';
 
 interface AttributionDetailsProps {
   result: PipelineResult;
