@@ -26,6 +26,7 @@ import {
   RiShareLine,
   RiFilePdfLine,
   RiArrowDownSLine,
+  RiArrowRightLine,
   RiCheckboxCircleLine,
   RiTimeLine,
   RiHdLine,
@@ -286,57 +287,67 @@ export default function ResultsPage({
       content: (
         <div className="space-y-6">
           {/* Content Validation Report */}
-          <div className="bg-black rounded-lg p-6 text-white">
-            <h3 className="text-lg font-semibold mb-4">Content Validation Report</h3>
-            <div className="flex items-start gap-6">
-              <div className="flex-shrink-0">
-                <div className="w-24 h-24 rounded-full border-4 border-white flex items-center justify-center">
-                  <span className="text-3xl font-bold">
-                    {result.results?.final_attribution?.total_score
-                      ? Math.round(result.results.final_attribution.total_score * 100)
-                      : '88'}
-                  </span>
+          <div className="relative bg-gray-900 rounded-2xl p-8 text-white shadow-xl overflow-hidden">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-5">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full blur-3xl"></div>
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-slate-500 rounded-full blur-3xl"></div>
+            </div>
+            
+            <div className="relative z-10">
+              <div className="flex items-start gap-8">
+                <div className="flex-shrink-0">
+                  <div className="relative w-32 h-32 rounded-full border-4 border-white/20 bg-blue-600/20 backdrop-blur-sm flex items-center justify-center">
+                    <div className="absolute inset-0 rounded-full bg-blue-600/30 animate-pulse"></div>
+                    <span className="relative z-10 text-5xl font-bold">
+                      {result.results?.final_attribution?.total_score
+                        ? Math.round(result.results.final_attribution.total_score * 100)
+                        : '88'}
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <div className="flex-1">
-                <div className={`inline-block px-3 py-1 rounded text-sm font-medium mb-2 ${
-                  result.results?.post_gen_safety?.passed && (result.results?.post_gen_safety?.contamination_score ?? 1) < 0.05
-                    ? 'bg-green-600 text-white'
-                    : (result.results?.post_gen_safety?.contamination_score ?? 0) > 0.9
-                    ? 'bg-red-600 text-white'
-                    : 'bg-yellow-600 text-white'
-                }`}>
-                  {result.results?.post_gen_safety?.passed && (result.results?.post_gen_safety?.contamination_score ?? 1) < 0.05
-                    ? 'Approved for Monetization'
-                    : (result.results?.post_gen_safety?.contamination_score ?? 0) > 0.9
-                    ? 'Monetization Blocked'
-                    : 'Review Required'}
+                <div className="flex-1">
+                  <h3 className="text-2xl font-bold mb-4">Content Validation Report</h3>
+                  <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold mb-4 ${
+                    result.results?.post_gen_safety?.passed && (result.results?.post_gen_safety?.contamination_score ?? 1) < 0.05
+                      ? 'bg-green-500/20 text-green-200 border border-green-400/30'
+                      : (result.results?.post_gen_safety?.contamination_score ?? 0) > 0.9
+                      ? 'bg-red-500/20 text-red-200 border border-red-400/30'
+                      : 'bg-yellow-500/20 text-yellow-200 border border-yellow-400/30'
+                  }`}>
+                    <RiCheckboxCircleLine className="w-4 h-4" />
+                    {result.results?.post_gen_safety?.passed && (result.results?.post_gen_safety?.contamination_score ?? 1) < 0.05
+                      ? 'Approved for Monetization'
+                      : (result.results?.post_gen_safety?.contamination_score ?? 0) > 0.9
+                      ? 'Monetization Blocked'
+                      : 'Review Required'}
+                  </div>
+                  <p className="text-gray-200 text-base leading-relaxed">
+                    {result.results?.post_gen_safety?.passed && (result.results?.post_gen_safety?.contamination_score ?? 1) < 0.05
+                      ? 'Content has passed all safety checks and IP attribution validation. The generated video is ready for monetization with proper IP tracking in place.'
+                      : (result.results?.post_gen_safety?.contamination_score ?? 0) > 0.9
+                      ? 'Content contains unlicensed copyrighted material. Monetization is impossible due to copyright infringement and high contamination risk. See Monetization Status tab for details.'
+                      : 'Content requires review. Please check safety violations and IP attribution details below.'}
+                  </p>
                 </div>
-                <p className="text-gray-300 text-sm line-clamp-3">
-                  {result.results?.post_gen_safety?.passed && (result.results?.post_gen_safety?.contamination_score ?? 1) < 0.05
-                    ? 'Content has passed all safety checks and IP attribution validation. The generated video is ready for monetization with proper IP tracking in place.'
-                    : (result.results?.post_gen_safety?.contamination_score ?? 0) > 0.9
-                    ? 'Content contains unlicensed copyrighted material. Monetization is impossible due to copyright infringement and high contamination risk. See Monetization Status tab for details.'
-                    : 'Content requires review. Please check safety violations and IP attribution details below.'}
-                </p>
               </div>
             </div>
           </div>
 
           {/* Generated Output Section */}
           {result && (
-            <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
-              <div className="flex items-center gap-2 mb-6">
-                <div className="p-2 bg-blue-50 rounded-lg">
-                  <RiVideoLine className="w-5 h-5 text-blue-600" />
+            <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-lg">
+              <div className="flex items-center gap-3 mb-8">
+                <div className="p-3 bg-blue-600 rounded-lg">
+                  <RiVideoLine className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">Generated Output</h3>
+                <h3 className="text-2xl font-bold text-gray-900">Generated Output</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-[3.0fr_1fr] gap-8">
                 {/* Left side - Video */}
                 <div className="w-full">
                   {matchedExampleData?.results?.generated_video?.video_path ? (
-                    <div className="border-2 border-gray-200 rounded-xl overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 shadow-md hover:shadow-lg transition-shadow">
+                    <div className="border-2 border-gray-200 rounded-xl overflow-hidden bg-gray-50 shadow-lg hover:shadow-xl transition-all duration-300">
                       <CustomVideoPlayer
                         src={matchedExampleData.results.generated_video.video_path}
                         className="w-full"
@@ -358,58 +369,58 @@ export default function ResultsPage({
                 </div>
                 
                 {/* Right side - Video Details */}
-                <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl border border-gray-200 p-4 flex flex-col justify-start">
-                  <h4 className="text-sm font-semibold text-gray-700 mb-4 uppercase tracking-wide">Video Information</h4>
-                  <div className="space-y-4">
-                    <div className="p-4 bg-white rounded-lg border border-gray-100 hover:border-gray-200 transition-colors">
+                <div className="bg-white rounded-xl border border-gray-200 p-5 flex flex-col justify-start shadow-md">
+                  <h4 className="text-sm font-bold text-gray-700 mb-6 uppercase tracking-wider">Video Information</h4>
+                  <div className="space-y-3">
+                    <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-300 hover:shadow-sm transition-all duration-300">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-green-50 rounded-lg">
-                          <RiCheckboxCircleLine className="w-4 h-4 text-green-600" />
+                        <div className="p-2 bg-green-600 rounded-lg">
+                          <RiCheckboxCircleLine className="w-4 h-4 text-white" />
                         </div>
-                        <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Status</span>
+                        <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">Status</span>
                       </div>
                       <div className="pl-11">
-                        <span className="text-base font-medium text-gray-900">Generation complete</span>
+                        <span className="text-base font-semibold text-gray-900">Generation complete</span>
                       </div>
                     </div>
                     
-                    <div className="p-4 bg-white rounded-lg border border-gray-100 hover:border-gray-200 transition-colors">
+                    <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-300 hover:shadow-sm transition-all duration-300">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-blue-50 rounded-lg">
-                          <RiTimeLine className="w-4 h-4 text-blue-600" />
+                        <div className="p-2 bg-blue-600 rounded-lg">
+                          <RiTimeLine className="w-4 h-4 text-white" />
                         </div>
-                        <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Processing Time</span>
+                        <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">Processing Time</span>
                       </div>
                       <div className="pl-11">
-                        <span className="text-base font-medium text-gray-900">
+                        <span className="text-base font-semibold text-gray-900">
                           {getProcessingTime()}
                         </span>
                       </div>
                     </div>
                     
-                    <div className="p-4 bg-white rounded-lg border border-gray-100 hover:border-gray-200 transition-colors">
+                    <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-300 hover:shadow-sm transition-all duration-300">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-purple-50 rounded-lg">
-                          <RiHdLine className="w-4 h-4 text-purple-600" />
+                        <div className="p-2 bg-slate-600 rounded-lg">
+                          <RiHdLine className="w-4 h-4 text-white" />
                         </div>
-                        <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Resolution</span>
+                        <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">Resolution</span>
                       </div>
                       <div className="pl-11">
-                        <span className="text-base font-medium text-gray-900">
+                        <span className="text-base font-semibold text-gray-900">
                           {videoResolution || 'Loading...'}
                         </span>
                       </div>
                     </div>
                     
-                    <div className="p-4 bg-white rounded-lg border border-gray-100 hover:border-gray-200 transition-colors">
+                    <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-300 hover:shadow-sm transition-all duration-300">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-orange-50 rounded-lg">
-                          <RiTimerLine className="w-4 h-4 text-orange-600" />
+                        <div className="p-2 bg-orange-600 rounded-lg">
+                          <RiTimerLine className="w-4 h-4 text-white" />
                         </div>
-                        <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Duration</span>
+                        <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">Duration</span>
                       </div>
                       <div className="pl-11">
-                        <span className="text-base font-medium text-gray-900">
+                        <span className="text-base font-semibold text-gray-900">
                           {videoDuration !== null
                             ? `${Math.round(videoDuration)}s`
                             : 'Loading...'}
@@ -417,15 +428,15 @@ export default function ResultsPage({
                       </div>
                     </div>
                     
-                    <div className="p-4 bg-white rounded-lg border border-gray-100 hover:border-gray-200 transition-colors">
+                    <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-300 hover:shadow-sm transition-all duration-300">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-indigo-50 rounded-lg">
-                          <RiCalendarLine className="w-4 h-4 text-indigo-600" />
+                        <div className="p-2 bg-gray-600 rounded-lg">
+                          <RiCalendarLine className="w-4 h-4 text-white" />
                         </div>
-                        <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Timestamp</span>
+                        <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">Timestamp</span>
                       </div>
                       <div className="pl-11">
-                        <span className="text-base font-medium text-gray-900">{new Date().toLocaleString()}</span>
+                        <span className="text-base font-semibold text-gray-900">{new Date().toLocaleString()}</span>
                       </div>
                     </div>
                   </div>
@@ -436,8 +447,8 @@ export default function ResultsPage({
 
           {/* Metrics and Charts Section */}
           {result && (
-            <div className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-8 mt-8">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <MetricCard
                   title="Attribution"
                   value=""
@@ -535,63 +546,92 @@ export default function ResultsPage({
   });
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5]">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 relative">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-100/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-slate-100/20 rounded-full blur-3xl"></div>
+      </div>
+
       {/* Header */}
-      <header className="bg-black text-white px-6 py-4">
-        <div className="max-w-[1600px] mx-auto">
-          <h1 className="text-3xl font-bold mb-1">Velocity</h1>
-          <p className="text-sm text-gray-300">IP Attribution & Safety Platform</p>
+      <header className="relative z-10 bg-white border-b border-gray-200 shadow-sm">
+        <div className="max-w-[1600px] mx-auto px-6 py-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">
+                Velocity
+              </h1>
+              <p className="text-sm text-gray-500 mt-0.5">IP Attribution & Safety Platform</p>
+            </div>
+            <button
+              onClick={onNewAnalysis}
+              className="group px-6 py-2.5 bg-gray-900 text-white rounded-xl font-medium hover:bg-gray-800 transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg hover:scale-105"
+            >
+              <span>New Analysis</span>
+              <RiArrowRightLine className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </button>
+          </div>
         </div>
       </header>
 
-      <div className="p-6">
+      <div className="relative z-10 p-6 md:p-8">
         <div className="max-w-[1600px] mx-auto">
           {/* Page Title */}
-          <div className="mb-6">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">IP Attribution Analysis Results</h2>
-            <p className="text-gray-600">
+          <div className="mb-8 animate-fade-in">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-full border border-blue-100 mb-4">
+              <RiCheckboxCircleLine className="w-4 h-4 text-blue-600" />
+              <span className="text-sm font-medium text-blue-700">Analysis Complete</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3">
+              Analysis Results
+            </h2>
+            <p className="text-lg text-gray-600 max-w-3xl">
               Complete analysis of your generated content including IP attribution, safety checks, and monetization validation.
             </p>
           </div>
 
           {/* Analyzed Prompt Card */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Analyzed Content Prompt</h3>
-            <div className="bg-gray-50 rounded-lg p-4 mb-4">
-              <p className="text-gray-700 text-sm line-clamp-3">{prompt}</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={onNewAnalysis}
-                className="ml-auto px-4 py-2 bg-gray-800 text-white rounded-lg font-medium hover:bg-gray-900 transition-colors flex items-center gap-2"
-              >
-                New Analysis →
-              </button>
+          <div className="mb-8 animate-fade-in-up">
+            <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2.5 bg-blue-600 rounded-lg">
+                  <RiFileTextLine className="w-5 h-5 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">Analyzed Content Prompt</h3>
+              </div>
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <p className="text-gray-700 leading-relaxed">{prompt}</p>
+              </div>
             </div>
           </div>
 
           {/* Tabbed Content */}
-          <div className="space-y-4">
+          <div className="space-y-6 animate-fade-in-up delay-200">
             {/* Tab Navigation */}
-            <div className="flex gap-2 overflow-x-auto pb-1">
+            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
               {visibleTabs.map(tab => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-6 py-3 text-sm font-medium whitespace-nowrap transition-colors rounded-md ${
+                  className={`group relative px-6 py-3 text-sm font-semibold whitespace-nowrap transition-all duration-300 rounded-xl ${
                     activeTab === tab.id
-                      ? 'bg-green-50 text-green-700 border border-green-200 shadow-sm'
-                      : 'text-gray-500 hover:bg-gray-50 border border-gray-200'
+                      ? 'bg-blue-600 text-white shadow-md scale-105'
+                      : 'bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-gray-200 hover:border-gray-300 hover:shadow-sm'
                   }`}
                 >
                   {tab.label}
+                  {activeTab === tab.id && (
+                    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1/2 h-0.5 bg-white rounded-full"></div>
+                  )}
                 </button>
               ))}
             </div>
             
             {/* Tab Content */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              {visibleTabs.find(tab => tab.id === activeTab)?.content}
+            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-gray-200 min-h-[600px]">
+              <div className="animate-fade-in">
+                {visibleTabs.find(tab => tab.id === activeTab)?.content}
+              </div>
             </div>
           </div>
         </div>

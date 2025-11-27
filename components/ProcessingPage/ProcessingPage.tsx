@@ -9,6 +9,8 @@ import {
   RiMoneyDollarCircleLine,
   RiFileTextLine,
   RiVideoLine,
+  RiCheckLine,
+  RiLoader4Line,
 } from 'react-icons/ri';
 
 interface AnalysisStep {
@@ -49,7 +51,6 @@ export default function ProcessingPage({ prompt, currentStepIndex, totalSteps, o
     const isComplete = currentStepIndex >= totalSteps - 1;
     
     // Update progress based on current step
-    // Add 1 to currentStepIndex for display (0-indexed to 1-indexed)
     const displayStep = isComplete ? totalSteps : currentStepIndex + 1;
     const calculatedProgress = Math.min((displayStep / totalSteps) * 100, 100);
     setProgress(calculatedProgress);
@@ -58,7 +59,6 @@ export default function ProcessingPage({ prompt, currentStepIndex, totalSteps, o
     setSteps((prevSteps) =>
       prevSteps.map((step, index) => {
         if (isComplete) {
-          // All steps completed
           return { ...step, status: 'completed' };
         } else if (index < currentStepIndex) {
           return { ...step, status: 'completed' };
@@ -72,7 +72,6 @@ export default function ProcessingPage({ prompt, currentStepIndex, totalSteps, o
 
     // Call onComplete when all steps are done
     if (isComplete) {
-      // Small delay before calling onComplete to show final state
       const timer = setTimeout(() => {
         onComplete();
       }, 500);
@@ -80,81 +79,134 @@ export default function ProcessingPage({ prompt, currentStepIndex, totalSteps, o
     }
   }, [currentStepIndex, totalSteps, onComplete]);
 
-  const getStepCardClass = (status: 'active' | 'completed' | 'pending') => {
-    switch (status) {
-      case 'active':
-        return 'bg-green-50 border-2 border-green-500';
-      case 'completed':
-        return 'bg-white border border-gray-200';
-      case 'pending':
-        return 'bg-gray-100 border border-gray-200';
-      default:
-        return 'bg-gray-100 border border-gray-200';
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-[#fafafa] px-4 py-8">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <RiSearchLine className="w-5 h-5 text-gray-600" />
-            <h1 className="text-2xl font-semibold text-gray-900">IP Attribution Analysis in Progress</h1>
-          </div>
-          <p className="text-sm text-gray-500">Analyzing content, detecting IP elements, and performing safety checks...</p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-100/30 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-slate-100/30 rounded-full blur-3xl animate-pulse delay-1000"></div>
+      </div>
 
-        {/* Progress Bar */}
-        <div className="bg-black rounded-lg p-6 mb-8 shadow-lg">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-white font-medium">Velocity is analyzing your content</span>
-            <span className="text-white font-semibold">{Math.round(progress)}%</span>
-          </div>
-          <div className="w-full bg-gray-700 rounded-full h-1.5 mb-1">
-            <div
-              className="h-1.5 rounded-full transition-all duration-300 ease-out"
-              style={{
-                width: `${progress}%`,
-                background: 'linear-gradient(90deg, #ec4899 0%, #3b82f6 100%)',
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Analysis Steps Grid */}
-        <div className="grid grid-cols-2 gap-4">
-          {steps.map((step) => (
-            <div
-              key={step.id}
-              className={`rounded-lg p-4 transition-all duration-300 ${getStepCardClass(step.status)}`}
-            >
-              <div className="flex items-center gap-3">
-                <div
-                  className={`p-2 rounded-lg ${
-                    step.status === 'active'
-                      ? 'bg-green-500 text-white'
-                      : step.status === 'completed'
-                      ? 'bg-gray-200 text-gray-600'
-                      : 'bg-gray-200 text-gray-400'
-                  }`}
-                >
-                  {step.icon}
-                </div>
-                <span
-                  className={`font-medium ${
-                    step.status === 'active'
-                      ? 'text-green-700'
-                      : step.status === 'completed'
-                      ? 'text-gray-700'
-                      : 'text-gray-500'
-                  }`}
-                >
-                  {step.title}
-                </span>
-              </div>
+      <div className="relative z-10 px-4 py-12">
+        <div className="max-w-6xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-12 animate-fade-in">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-full border border-blue-100 mb-6">
+              <RiLoader4Line className="w-4 h-4 text-blue-600 animate-spin" />
+              <span className="text-sm font-medium text-blue-700">Analysis in Progress</span>
             </div>
-          ))}
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Processing Your Content
+            </h1>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Analyzing IP attribution, performing safety checks, and validating content for monetization
+            </p>
+          </div>
+
+          {/* Progress Card */}
+          <div className="mb-10 animate-fade-in-up">
+            <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-blue-600 rounded-lg">
+                    <RiBarChartLine className="w-5 h-5 text-white" />
+                  </div>
+                  <span className="text-lg font-semibold text-gray-900">Analysis Progress</span>
+                </div>
+                <div className="text-right">
+                  <span className="text-3xl font-bold text-blue-600">
+                    {Math.round(progress)}%
+                  </span>
+                </div>
+              </div>
+              
+              {/* Progress Bar */}
+              <div className="relative w-full h-2.5 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className="absolute top-0 left-0 h-full rounded-full transition-all duration-500 ease-out relative overflow-hidden bg-blue-600"
+                  style={{
+                    width: `${progress}%`,
+                  }}
+                >
+                  {/* Shimmer effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
+                </div>
+              </div>
+              
+              <p className="text-sm text-gray-500 mt-3">
+                {steps.find(s => s.status === 'active')?.title || 'Processing complete'}
+              </p>
+            </div>
+          </div>
+
+          {/* Analysis Steps Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-fade-in-up delay-200">
+            {steps.map((step, index) => {
+              const isActive = step.status === 'active';
+              const isCompleted = step.status === 'completed';
+              const isPending = step.status === 'pending';
+
+              return (
+                <div
+                  key={step.id}
+                  className={`group relative rounded-xl p-5 transition-all duration-300 ${
+                    isActive
+                      ? 'bg-blue-50 border-2 border-blue-500 scale-105'
+                      : isCompleted
+                      ? 'bg-white border border-gray-200 hover:border-gray-300'
+                      : 'bg-gray-50 border border-gray-200 opacity-60'
+                  }`}
+                  style={{
+                    animationDelay: `${index * 50}ms`,
+                  }}
+                >
+                  <div className="flex items-start gap-4">
+                    <div
+                      className={`p-3 rounded-lg transition-all duration-300 ${
+                        isActive
+                          ? 'bg-blue-600 text-white'
+                          : isCompleted
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-gray-200 text-gray-400'
+                      }`}
+                    >
+                      {isActive ? (
+                        <RiLoader4Line className="w-5 h-5 animate-spin" />
+                      ) : isCompleted ? (
+                        <RiCheckLine className="w-5 h-5" />
+                      ) : (
+                        step.icon
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <h3
+                        className={`font-semibold mb-1 transition-colors ${
+                          isActive
+                            ? 'text-blue-700'
+                            : isCompleted
+                            ? 'text-gray-900'
+                            : 'text-gray-500'
+                        }`}
+                      >
+                        {step.title}
+                      </h3>
+                      {isActive && (
+                        <p className="text-xs text-blue-600 mt-1 animate-pulse">Processing...</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Prompt Display */}
+          <div className="mt-10 animate-fade-in-up delay-300">
+            <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50">
+              <p className="text-sm font-medium text-gray-500 mb-2">Analyzing Prompt</p>
+              <p className="text-gray-700 line-clamp-2">{prompt}</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
