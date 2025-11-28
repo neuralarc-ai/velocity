@@ -304,35 +304,68 @@ export default function ResultsPage({
                   <div className="relative w-32 h-32 rounded-full border-4 border-white/20 bg-brand-orange/20 backdrop-blur-sm flex items-center justify-center">
                     <div className="absolute inset-0 rounded-full bg-brand-orange/30"></div>
                     <span className="relative z-10 text-5xl font-bold">
-                      {result.results?.final_attribution?.total_score
-                        ? Math.round(result.results.final_attribution.total_score * 100)
-                        : '88'}
+                      {(() => {
+                        const totalScore = result.results?.final_attribution?.total_score || 
+                                         matchedExampleData?.results?.final_attribution?.total_score;
+                        return totalScore ? Math.round(totalScore * 100) : '88';
+                      })()}
                     </span>
                   </div>
                 </div>
                 <div className="flex-1">
                   <h3 className="text-2xl font-bold mb-4">Content Validation Report</h3>
-                  <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold mb-4 ${
-                    result.results?.post_gen_safety?.passed && (result.results?.post_gen_safety?.contamination_score ?? 1) < 0.05
-                      ? 'bg-green-500/20 text-green-200 border border-green-400/30'
-                      : (result.results?.post_gen_safety?.contamination_score ?? 0) > 0.9
-                      ? 'bg-red-500/20 text-red-200 border border-red-400/30'
-                      : 'bg-yellow-500/20 text-yellow-200 border border-yellow-400/30'
-                  }`}>
-                    <RiCheckboxCircleLine className="w-4 h-4" />
-                    {result.results?.post_gen_safety?.passed && (result.results?.post_gen_safety?.contamination_score ?? 1) < 0.05
-                      ? 'Approved for Monetization'
-                      : (result.results?.post_gen_safety?.contamination_score ?? 0) > 0.9
-                      ? 'Monetization Blocked'
-                      : 'Review Required'}
-                  </div>
-                  <p className="text-gray-200 text-base leading-relaxed">
-                    {result.results?.post_gen_safety?.passed && (result.results?.post_gen_safety?.contamination_score ?? 1) < 0.05
-                      ? 'Content has passed all safety checks and IP attribution validation. The generated video is ready for monetization with proper IP tracking in place.'
-                      : (result.results?.post_gen_safety?.contamination_score ?? 0) > 0.9
-                      ? 'Content contains unlicensed copyrighted material. Monetization is impossible due to copyright infringement and high contamination risk. See Monetization Status tab for details.'
-                      : 'Content requires review. Please check safety violations and IP attribution details below.'}
-                  </p>
+                  {(() => {
+                    const postGenSafety = result.results?.post_gen_safety || matchedExampleData?.results?.post_gen_safety;
+                    const finalAttribution = result.results?.final_attribution || matchedExampleData?.results?.final_attribution;
+                    const passed = postGenSafety?.passed ?? false;
+                    const contaminationScore = postGenSafety?.contamination_score ?? 1;
+                    const monetizationVerdict = finalAttribution?.details?.monetization_verdict as string | undefined;
+                    
+                    // Check monetization risk from verdict
+                    const hasMonetizationRisk = monetizationVerdict && (
+                      monetizationVerdict.includes('IMPOSSIBLE') || 
+                      monetizationVerdict.includes('EXTREME RISK') || 
+                      monetizationVerdict.includes('HIGH RISK') ||
+                      monetizationVerdict.includes('UNLIKELY')
+                    );
+                    
+                    // Determine status
+                    const isApproved = passed && contaminationScore < 0.05 && !hasMonetizationRisk;
+                    const isBlocked = contaminationScore > 0.9 || monetizationVerdict?.includes('IMPOSSIBLE') || monetizationVerdict?.includes('EXTREME RISK');
+                    const isNotApproved = hasMonetizationRisk && !isBlocked; // High risk but not impossible
+                    
+                    return (
+                      <>
+                        <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold mb-4 ${
+                          isApproved
+                            ? 'bg-green-500/20 text-green-200 border border-green-400/30'
+                            : isBlocked
+                            ? 'bg-red-500/20 text-red-200 border border-red-400/30'
+                            : isNotApproved
+                            ? 'bg-orange-500/20 text-orange-200 border border-orange-400/30'
+                            : 'bg-yellow-500/20 text-yellow-200 border border-yellow-400/30'
+                        }`}>
+                          <RiCheckboxCircleLine className="w-4 h-4" />
+                          {isApproved
+                            ? 'Approved for Monetization'
+                            : isBlocked
+                            ? 'Monetization Blocked'
+                            : isNotApproved
+                            ? 'Not Approved for Monetization'
+                            : 'Review Required'}
+                        </div>
+                        <p className="text-gray-200 text-base leading-relaxed">
+                          {isApproved
+                            ? 'Content has passed all safety checks and IP attribution validation. The generated video is ready for monetization with proper IP tracking in place.'
+                            : isBlocked
+                            ? 'Content contains unlicensed copyrighted material. Monetization is impossible due to copyright infringement and high contamination risk. See Monetization Status tab for details.'
+                            : isNotApproved
+                            ? 'Content poses significant monetization risks due to copyright concerns, trademark issues, or platform policy violations. Monetization is not recommended. See Monetization Status tab for detailed risk analysis.'
+                            : 'Content requires review. Please check safety violations and IP attribution details below.'}
+                        </p>
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
             </div>
@@ -475,13 +508,55 @@ export default function ResultsPage({
                   description="Model influence detected"
                   icon={<RiAlertLine className="w-6 h-6" />}
                 />
-                <MetricCard
-                  title="Monetization"
-                  value=""
-                  description="Ready for release"
-                  status="Approved"
-                  icon={<RiMoneyDollarCircleLine className="w-6 h-6" />}
-                />
+                {(() => {
+                  const postGenSafety = result.results?.post_gen_safety || matchedExampleData?.results?.post_gen_safety;
+                  const finalAttribution = result.results?.final_attribution || matchedExampleData?.results?.final_attribution;
+                  const passed = postGenSafety?.passed ?? false;
+                  const contaminationScore = postGenSafety?.contamination_score ?? 1;
+                  const monetizationVerdict = finalAttribution?.details?.monetization_verdict as string | undefined;
+                  
+                  const hasMonetizationRisk = monetizationVerdict && (
+                    monetizationVerdict.includes('IMPOSSIBLE') || 
+                    monetizationVerdict.includes('EXTREME RISK') || 
+                    monetizationVerdict.includes('HIGH RISK') ||
+                    monetizationVerdict.includes('UNLIKELY')
+                  );
+                  
+                  const isActuallyApproved = passed && contaminationScore < 0.05 && !hasMonetizationRisk;
+                  const isBlocked = contaminationScore > 0.9 || monetizationVerdict?.includes('IMPOSSIBLE') || monetizationVerdict?.includes('EXTREME RISK');
+                  
+                  if (isActuallyApproved) {
+                    return (
+                      <MetricCard
+                        title="Monetization"
+                        value=""
+                        description="Ready for release"
+                        status="Approved"
+                        icon={<RiMoneyDollarCircleLine className="w-6 h-6" />}
+                      />
+                    );
+                  } else if (isBlocked) {
+                    return (
+                      <MetricCard
+                        title="Monetization"
+                        value=""
+                        description="Not eligible"
+                        status="Blocked"
+                        icon={<RiMoneyDollarCircleLine className="w-6 h-6" />}
+                      />
+                    );
+                  } else {
+                    return (
+                      <MetricCard
+                        title="Monetization"
+                        value=""
+                        description="Review required"
+                        status="Pending"
+                        icon={<RiMoneyDollarCircleLine className="w-6 h-6" />}
+                      />
+                    );
+                  }
+                })()}
               </div>
 
 
@@ -497,10 +572,20 @@ export default function ResultsPage({
               />
 
               {/* Monetization Status */}
-              <MonetizationStatus 
-                approved={result.results?.post_gen_safety?.passed && result.results?.post_gen_safety?.contamination_score < 0.05} 
-                result={result.results}
-              />
+              {(() => {
+                const postGenSafety = result.results?.post_gen_safety || matchedExampleData?.results?.post_gen_safety;
+                const passed = postGenSafety?.passed ?? false;
+                const contaminationScore = postGenSafety?.contamination_score ?? 1;
+                const isApproved = passed && contaminationScore < 0.05;
+                
+                return (
+                  <MonetizationStatus 
+                    approved={isApproved} 
+                    result={result.results}
+                    matchedExampleData={matchedExampleData}
+                  />
+                );
+              })()}
             </div>
           )}
         </div>
@@ -519,10 +604,20 @@ export default function ResultsPage({
     {
       id: 'monetization-status',
       label: 'Monetization Status',
-      content: <MonetizationStatus 
-        approved={result.results?.post_gen_safety?.passed && result.results?.post_gen_safety?.contamination_score < 0.05} 
-        result={result.results}
-      />,
+      content: (() => {
+        const postGenSafety = result.results?.post_gen_safety || matchedExampleData?.results?.post_gen_safety;
+        const passed = postGenSafety?.passed ?? false;
+        const contaminationScore = postGenSafety?.contamination_score ?? 1;
+        const isApproved = passed && contaminationScore < 0.05;
+        
+        return (
+          <MonetizationStatus 
+            approved={isApproved} 
+            result={result.results}
+            matchedExampleData={matchedExampleData}
+          />
+        );
+      })(),
     },
     {
       id: 'execution-logs',
