@@ -26,10 +26,10 @@ export default function ProcessTrace({ steps, currentStep }: ProcessTraceProps) 
     const iconClass = "w-5 h-5";
     
     if (status === 'Complete' || status === 'Passed' || status === 'Approved') {
-      return <RiCheckboxCircleLine className={`${iconClass} text-green-600`} />;
+      return <RiCheckboxCircleLine className={`${iconClass} text-brand-dark-green`} />;
     }
     if (status === 'Running') {
-      return <RiLoader4Line className={`${iconClass} text-blue-600 animate-spin`} />;
+      return <RiLoader4Line className={`${iconClass} text-brand-orange animate-spin`} />;
     }
     
     // Default icons for each step
@@ -57,37 +57,37 @@ export default function ProcessTrace({ steps, currentStep }: ProcessTraceProps) 
     switch (status) {
       case 'Complete':
         return (
-          <span className={`${baseClasses} bg-green-100 text-green-700 border border-green-200`}>
+          <span className={`${baseClasses} bg-brand-lime-green/50 text-brand-dark-green border border-brand-lime-green`}>
             Complete
           </span>
         );
       case 'Passed':
         return (
-          <span className={`${baseClasses} bg-green-100 text-green-700 border border-green-200`}>
+          <span className={`${baseClasses} bg-brand-lime-green/50 text-brand-dark-green border border-brand-lime-green`}>
             Passed
           </span>
         );
       case 'Approved':
         return (
-          <span className={`${baseClasses} bg-blue-100 text-blue-700 border border-blue-200`}>
+          <span className={`${baseClasses} bg-brand-dark-green text-white border border-brand-dark-green`}>
             Approved
           </span>
         );
       case 'Running':
         return (
-          <span className={`${baseClasses} bg-blue-100 text-blue-700 border border-blue-200 animate-pulse`}>
+          <span className={`${baseClasses} bg-brand-mint-green/50 text-brand-orange border border-brand-orange animate-pulse`}>
             Running...
           </span>
         );
       case 'Pending':
         return (
-          <span className={`${baseClasses} bg-gray-100 text-gray-500 border border-gray-200`}>
+          <span className={`${baseClasses} bg-brand-cream/50 text-gray-500 border border-brand-mint-green/30`}>
             Pending
           </span>
         );
       default:
         return (
-          <span className={`${baseClasses} bg-gray-100 text-gray-500 border border-gray-200`}>
+          <span className={`${baseClasses} bg-brand-cream/50 text-gray-500 border border-brand-mint-green/30`}>
             {status}
           </span>
         );
@@ -106,9 +106,9 @@ export default function ProcessTrace({ steps, currentStep }: ProcessTraceProps) 
   return (
     <div className="bg-white rounded-lg border border-gray-200 flex flex-col shadow-sm">
       {/* Header */}
-      <div className="p-5 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
+      <div className="p-5 border-b border-brand-mint-green/30 bg-brand-cream/30">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-black flex items-center justify-center">
+          <div className="w-10 h-10 rounded-lg bg-brand-orange flex items-center justify-center">
             <RiTimeLine className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -154,11 +154,11 @@ export default function ProcessTrace({ steps, currentStep }: ProcessTraceProps) 
                     <div
                       className={`bg-white rounded-xl border-2 p-5 shadow-sm transition-all duration-300 ${
                         isRunning
-                          ? 'border-blue-300 bg-blue-50 shadow-md'
+                          ? 'border-brand-orange bg-brand-mint-green/30 shadow-md'
                           : isCompleted
-                          ? 'border-green-200 bg-green-50/30'
-                          : 'border-gray-200 bg-white'
-                      } ${isActive ? 'ring-2 ring-blue-400 ring-offset-2' : ''}`}
+                          ? 'border-brand-lime-green bg-brand-lime-green/20'
+                          : 'border-brand-mint-green/20 bg-white'
+                      } ${isActive ? 'ring-2 ring-brand-orange ring-offset-2' : ''}`}
                     >
                       {/* Step Header */}
                       <div className="flex items-start justify-between mb-3">
@@ -196,10 +196,10 @@ export default function ProcessTrace({ steps, currentStep }: ProcessTraceProps) 
                     <div
                       className={`absolute left-0 top-6 w-12 h-12 rounded-full border-4 border-white flex items-center justify-center transition-all duration-300 ${
                         isCompleted
-                          ? 'bg-green-500 shadow-lg shadow-green-200'
+                          ? 'bg-brand-dark-green shadow-lg shadow-brand-lime-green/50'
                           : isRunning
-                          ? 'bg-blue-500 shadow-lg shadow-blue-200 animate-pulse'
-                          : 'bg-gray-300'
+                          ? 'bg-brand-orange shadow-lg shadow-brand-orange/50 animate-pulse'
+                          : 'bg-brand-mint-green/50'
                       }`}
                     >
                       {isCompleted && (
@@ -222,22 +222,22 @@ export default function ProcessTrace({ steps, currentStep }: ProcessTraceProps) 
 
       {/* Footer Stats */}
       {steps.length > 0 && (
-        <div className="p-4 border-t border-gray-200 bg-gray-50">
+        <div className="p-4 border-t border-brand-mint-green/30 bg-brand-cream/30">
           <div className="flex items-center justify-between text-xs">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-green-500" />
+                <div className="w-2 h-2 rounded-full bg-brand-dark-green" />
                 <span className="text-gray-600">
-                  Completed: <span className="font-semibold text-gray-900">
+                  Completed: <span className="font-semibold text-brand-dark-green">
                     {steps.filter(s => isStepCompleted(s.status)).length}
                   </span>
                 </span>
               </div>
               {steps.some(s => isStepRunning(s.status)) && (
                 <div className="flex items-center gap-1.5">
-                  <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                  <div className="w-2 h-2 rounded-full bg-brand-orange animate-pulse" />
                   <span className="text-gray-600">
-                    Running: <span className="font-semibold text-gray-900">1</span>
+                    Running: <span className="font-semibold text-brand-orange">1</span>
                   </span>
                 </div>
               )}

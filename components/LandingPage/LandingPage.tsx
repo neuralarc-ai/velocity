@@ -33,22 +33,22 @@ export default function LandingPage({ onStartAnalysis }: LandingPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 relative overflow-hidden">
+    <div className="min-h-screen bg-brand-cream relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-100/30 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-slate-100/30 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-20 left-10 w-72 h-72 bg-brand-mint-green/40 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-brand-lime-green/40 rounded-full blur-3xl animate-pulse delay-1000"></div>
       </div>
 
       <div className="relative z-10 flex items-center justify-center min-h-screen px-4 py-12">
         <div className="w-full max-w-5xl">
           {/* Header */}
           <div className="text-center mb-16 animate-fade-in">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-full border border-blue-100 mb-6">
-              <RiSparklingFill className="w-4 h-4 text-blue-600" />
-              <span className="text-sm font-medium text-blue-700">AI-Powered IP Attribution Platform</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-brand-mint-green/50 rounded-full border border-brand-lime-green/50 mb-6">
+              <RiSparklingFill className="w-4 h-4 text-brand-orange" />
+              <span className="text-sm font-medium text-brand-dark-green">AI-Powered IP Attribution Platform</span>
             </div>
-            <h1 className="text-6xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
+            <h1 className="text-6xl md:text-7xl font-bold text-brand-dark-green mb-6 leading-tight">
               Velocity
             </h1>
             <p className="text-2xl md:text-3xl text-gray-600 mb-4 font-light">
@@ -66,7 +66,7 @@ export default function LandingPage({ onStartAnalysis }: LandingPageProps) {
             }`}>
               <div className="mb-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2.5 bg-blue-600 rounded-lg">
+                  <div className="p-2.5 bg-brand-orange rounded-lg">
                     <RiLightbulbFlashLine className="w-5 h-5 text-white" />
                   </div>
                   <h2 className="text-xl font-semibold text-gray-900">Describe Your Content</h2>
@@ -84,7 +84,7 @@ export default function LandingPage({ onStartAnalysis }: LandingPageProps) {
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
                   placeholder="e.g., 'athlete wearing Nike shoes running on a track' or 'people drinking Coca-Cola at a beach party'"
-                  className="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 resize-none bg-white text-gray-900 placeholder-gray-400 transition-all duration-300 text-lg leading-relaxed"
+                  className="w-full px-6 py-4 border-2 border-brand-mint-green/30 rounded-xl focus:ring-4 focus:ring-brand-orange/20 focus:border-brand-orange resize-none bg-white text-gray-900 placeholder-gray-400 transition-all duration-300 text-lg leading-relaxed"
                   rows={6}
                 />
                 <div className="absolute bottom-4 right-4 flex items-center gap-2 text-xs text-gray-400">
@@ -111,7 +111,7 @@ export default function LandingPage({ onStartAnalysis }: LandingPageProps) {
                 <button
                   key={example.id}
                   onClick={() => setPrompt(example.video.description)}
-                  className="group px-6 py-3 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 hover:shadow-md transition-all duration-300 hover:scale-105"
+                  className="group px-6 py-3 bg-white border border-brand-mint-green/30 rounded-xl text-sm font-medium text-gray-700 hover:bg-brand-mint-green/30 hover:border-brand-orange hover:text-brand-dark-green hover:shadow-md transition-all duration-300 hover:scale-105"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
                   <span className="flex items-center gap-2">
@@ -128,7 +128,7 @@ export default function LandingPage({ onStartAnalysis }: LandingPageProps) {
             <button
               onClick={handleSubmit}
               disabled={!prompt.trim()}
-              className="group relative px-10 py-5 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white rounded-2xl font-semibold text-lg hover:from-gray-800 hover:via-gray-700 hover:to-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center gap-3 shadow-xl hover:shadow-2xl hover:scale-105 disabled:hover:scale-100 overflow-hidden"
+              className="group relative px-10 py-5 bg-brand-orange text-white rounded-2xl font-semibold text-lg hover:bg-brand-orange/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center gap-3 shadow-xl hover:shadow-2xl hover:scale-105 disabled:hover:scale-100 overflow-hidden"
             >
               {/* Shine effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
@@ -141,23 +141,23 @@ export default function LandingPage({ onStartAnalysis }: LandingPageProps) {
 
           {/* Feature Highlights */}
           <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in-up delay-400">
-            <div className="p-6 bg-white rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300">
-              <div className="p-3 bg-blue-100 rounded-lg w-fit mb-4">
-                <RiBarChartLine className="w-6 h-6 text-blue-600" />
+            <div className="p-6 bg-white/90 backdrop-blur-sm rounded-xl border border-brand-mint-green/30 hover:shadow-lg transition-all duration-300">
+              <div className="p-3 bg-brand-mint-green/50 rounded-lg w-fit mb-4">
+                <RiBarChartLine className="w-6 h-6 text-brand-orange" />
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">IP Attribution</h3>
               <p className="text-sm text-gray-600">Comprehensive tracking and analysis of intellectual property elements</p>
             </div>
-            <div className="p-6 bg-white rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300">
-              <div className="p-3 bg-green-100 rounded-lg w-fit mb-4">
-                <RiShieldCheckLine className="w-6 h-6 text-green-600" />
+            <div className="p-6 bg-white/90 backdrop-blur-sm rounded-xl border border-brand-lime-green/30 hover:shadow-lg transition-all duration-300">
+              <div className="p-3 bg-brand-lime-green/50 rounded-lg w-fit mb-4">
+                <RiShieldCheckLine className="w-6 h-6 text-brand-dark-green" />
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">Safety Checks</h3>
               <p className="text-sm text-gray-600">Automated validation against safety rules and compliance standards</p>
             </div>
-            <div className="p-6 bg-white rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300">
-              <div className="p-3 bg-slate-100 rounded-lg w-fit mb-4">
-                <RiShieldStarLine className="w-6 h-6 text-slate-600" />
+            <div className="p-6 bg-white/90 backdrop-blur-sm rounded-xl border border-brand-mint-green/30 hover:shadow-lg transition-all duration-300">
+              <div className="p-3 bg-brand-dark-green rounded-lg w-fit mb-4">
+                <RiShieldStarLine className="w-6 h-6 text-white" />
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">Monetization Ready</h3>
               <p className="text-sm text-gray-600">Validate content for safe monetization and distribution</p>

@@ -62,7 +62,7 @@ export default function PipelineSteps({ isRunning }: { isRunning: boolean }) {
   }, [isRunning]);
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div className="bg-white rounded-lg shadow-sm border border-brand-mint-green/30 p-6">
       <h2 className="text-xl font-semibold text-gray-900 mb-6">Pipeline Execution</h2>
       <div className="space-y-4">
         {steps.map((step, index) => (
@@ -70,22 +70,22 @@ export default function PipelineSteps({ isRunning }: { isRunning: boolean }) {
             key={step.id}
             className={`flex items-start gap-4 p-4 rounded-lg border transition-all ${
               step.status === 'running'
-                ? 'border-primary-500 bg-primary-50'
+                ? 'border-brand-orange bg-brand-mint-green/30'
                 : step.status === 'completed'
-                ? 'border-green-200 bg-green-50'
+                ? 'border-brand-lime-green bg-brand-lime-green/20'
                 : step.status === 'failed'
                 ? 'border-red-200 bg-red-50'
-                : 'border-gray-200 bg-gray-50'
+                : 'border-brand-mint-green/20 bg-brand-cream/20'
             }`}
           >
             <div className="flex-shrink-0 mt-0.5">
               {step.status === 'completed' && (
-                <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-brand-dark-green flex items-center justify-center">
                   <RiCheckLine className="w-5 h-5 text-white" />
                 </div>
               )}
               {step.status === 'running' && (
-                <div className="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-brand-orange flex items-center justify-center">
                   <RiLoader4Line className="w-5 h-5 text-white animate-spin" />
                 </div>
               )}
@@ -95,8 +95,8 @@ export default function PipelineSteps({ isRunning }: { isRunning: boolean }) {
                 </div>
               )}
               {step.status === 'pending' && (
-                <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
-                  <RiTimeLine className="w-5 h-5 text-gray-600" />
+                <div className="w-8 h-8 rounded-full bg-brand-mint-green/50 flex items-center justify-center">
+                  <RiTimeLine className="w-5 h-5 text-brand-dark-green" />
                 </div>
               )}
             </div>

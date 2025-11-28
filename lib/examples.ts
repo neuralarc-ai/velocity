@@ -60,10 +60,10 @@ export const VIDEO_EXAMPLES: VideoExample[] = [
     promptPattern: 'spider-man|doctor doom|marvel|superhero|symbiote|venom|doom',
     promptKeywords: ['spider-man', 'doctor doom', 'marvel', 'superhero', 'symbiote', 'venom', 'doom', 'battle', 'combat'],
     video: {
-      path: '/videoplayback.mp4',
+      path: '/spideydoom.mp4',
       duration: 54.0,
       resolution: '1080p',
-      description: 'High-fidelity battle sequence featuring Spider-Man (Symbiote/Venom suit) vs. Doctor Doom in a post-apocalyptic setting',
+      description: 'Ultra-realistic, high-fidelity, Marvel-studio–grade cinematic scene of Spider-Man wearing the black Symbiote/Venom suit engaged in an intense battle against Doctor Doom in a vast, post-apocalyptic landscape. Dynamic action poses, dramatic lighting, swirling dust and debris, energy blasts illuminating the environment, detailed textures on the symbiote suit, metallic reflections on Doom’s armor, and photorealistic atmospheric effects. Hyper-detailed environment with destroyed buildings, cracked ground, fire embers, and smoke trails. Shot on a high-end cinema camera in 8K resolution with sharp motion clarity, volumetric lighting, and deep contrast. Epic, powerful, and visually immersive—like a Marvel Studios action sequence.',
     },
     results: {
       retrieved_context: {
@@ -126,9 +126,9 @@ export const VIDEO_EXAMPLES: VideoExample[] = [
           policy_threshold: 'SFW fantasy violence',
         },
       },
-      augmented_prompt: 'High-fidelity battle sequence featuring Spider-Man (in black Symbiote/Venom suit) vs. Doctor Doom (or Iron Man variant) in post-apocalyptic or ruined city setting. Cinematic superhero combat with high-stakes confrontation between two major Marvel figures.',
+      augmented_prompt: 'Ultra-realistic, high-fidelity, Marvel-studio–grade cinematic scene of Spider-Man wearing the black Symbiote/Venom suit engaged in an intense battle against Doctor Doom in a vast, post-apocalyptic landscape. Dynamic action poses, dramatic lighting, swirling dust and debris, energy blasts illuminating the environment, detailed textures on the symbiote suit, metallic reflections on Doom’s armor, and photorealistic atmospheric effects. Hyper-detailed environment with destroyed buildings, cracked ground, fire embers, and smoke trails. Shot on a high-end cinema camera in 8K resolution with sharp motion clarity, volumetric lighting, and deep contrast. Epic, powerful, and visually immersive—like a Marvel Studios action sequence.',
       generated_video: {
-        video_path: '/videoplayback.mp4',
+        video_path: '/spideydoom.mp4',
         duration: 54.0,
         resolution: '1080p',
         model_used: 'veo',

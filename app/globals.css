@@ -146,9 +146,30 @@ body {
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #FC5E37 0%, #D4EB9D 50%, #004116 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* Brand gradient utilities */
+.gradient-progress {
+  background: linear-gradient(90deg, #FC5E37 0%, #D4EB9D 50%, #004116 100%);
+}
+
+.gradient-primary {
+  background: linear-gradient(135deg, #FC5E37 0%, #D4EB9D 100%);
+}
+
+.gradient-success {
+  background: linear-gradient(135deg, #D4EB9D 0%, #004116 100%);
+}
+
+.gradient-soft {
+  background: linear-gradient(135deg, #FEF9E6 0%, #CFEBD5 50%, #D4EB9D 100%);
+}
+
+.gradient-background {
+  background: linear-gradient(135deg, #FEF9E6 0%, #CFEBD5 30%, #D4EB9D 60%, #FEF9E6 100%);
 }
 

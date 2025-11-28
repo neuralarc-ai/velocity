@@ -145,12 +145,14 @@ export default function ResultsPage({
         return [];
       }
       
+      const colors = ['#FC5E37', '#004116', '#CFEBD5', '#FEF9E6', '#D4EB9D'];
       return Object.entries(attributions)
-        .map(([label, value]) => {
+        .map(([label, value], index) => {
           const numValue = Number(value) * 100;
           return {
             label,
             value: numValue,
+            color: colors[index % colors.length],
           };
         })
         .filter((item) => !isNaN(item.value) && item.value > 0)
@@ -159,13 +161,15 @@ export default function ResultsPage({
     
     // Map each retrieved IP to chart data using relevance_score
     // This shows all individual IPs found, not just grouped by owner
-    const data = retrievedIps.map((ip) => {
+    const colors = ['#FC5E37', '#004116', '#CFEBD5', '#FEF9E6', '#D4EB9D'];
+    const data = retrievedIps.map((ip, index) => {
       const relevancePercent = (ip.relevance_score || 0) * 100;
       // Use IP name as label, show owner in parentheses if different
       const label = ip.name && ip.name !== ip.owner ? `${ip.name} (${ip.owner})` : ip.owner;
       return {
         label,
         value: relevancePercent,
+        color: colors[index % colors.length],
       };
     })
     .filter((item) => !isNaN(item.value) && item.value > 0)
@@ -188,7 +192,7 @@ export default function ResultsPage({
         return [];
       }
       
-      const colors = ['#000000', '#4a4a4a', '#9ca3af', '#d1d5db', '#e5e7eb'];
+      const colors = ['#FC5E37', '#004116', '#CFEBD5', '#FEF9E6', '#D4EB9D'];
       return Object.entries(attributions)
         .map(([label, value], index) => {
           const numValue = Number(value) * 100;
@@ -204,7 +208,7 @@ export default function ResultsPage({
     
     // Map each retrieved IP to chart data using relevance_score
     // This shows all individual IPs found, not just grouped by owner
-    const colors = ['#000000', '#4a4a4a', '#9ca3af', '#d1d5db', '#e5e7eb', '#f3f4f6', '#9ca3af', '#d1d5db'];
+    const colors = ['#FC5E37', '#004116', '#CFEBD5', '#FEF9E6', '#D4EB9D', '#FC5E37', '#004116', '#CFEBD5'];
     const data = retrievedIps.map((ip, index) => {
       const relevancePercent = (ip.relevance_score || 0) * 100;
       // Use IP name as label, show owner in parentheses if different
@@ -225,9 +229,9 @@ export default function ResultsPage({
   const ComprehensiveAnalysis = () => (
     <div className="space-y-6">
       {/* Safety Checks Section */}
-      <div className="bg-gray-50 rounded-lg p-4">
+      <div className="bg-brand-cream/30 rounded-lg p-4 border border-brand-mint-green/20">
         <h3 className="text-base font-medium text-gray-900 mb-3 flex items-center gap-2">
-          <RiShieldCheckLine className="w-4 h-4 text-blue-600" />
+          <RiShieldCheckLine className="w-4 h-4 text-brand-orange" />
           Safety & Compliance
         </h3>
         <div className="pl-6">
@@ -237,9 +241,9 @@ export default function ResultsPage({
 
       {/* Video Analysis Section */}
       {matchedExampleData?.results?.video_metrics && (
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-brand-cream/30 rounded-lg p-4 border border-brand-mint-green/20">
           <h3 className="text-base font-medium text-gray-900 mb-3 flex items-center gap-2">
-            <RiVideoLine className="w-4 h-4 text-blue-600" />
+            <RiVideoLine className="w-4 h-4 text-brand-orange" />
             Video Analysis
           </h3>
           <div className="pl-6">
@@ -249,9 +253,9 @@ export default function ResultsPage({
       )}
 
       {/* IP Attribution Section */}
-      <div className="bg-gray-50 rounded-lg p-4">
+      <div className="bg-brand-cream/30 rounded-lg p-4 border border-brand-mint-green/20">
         <h3 className="text-base font-medium text-gray-900 mb-3 flex items-center gap-2">
-          <RiBarChartLine className="w-4 h-4 text-blue-600" />
+          <RiBarChartLine className="w-4 h-4 text-brand-orange" />
           IP Attribution & Sources
         </h3>
         <div className="pl-6">
@@ -260,9 +264,9 @@ export default function ResultsPage({
       </div>
 
       {/* Contamination Report Section */}
-      <div className="bg-gray-50 rounded-lg p-4">
+      <div className="bg-brand-cream/30 rounded-lg p-4 border border-brand-mint-green/20">
         <h3 className="text-base font-medium text-gray-900 mb-3 flex items-center gap-2">
-          <RiAlertLine className="w-4 h-4 text-blue-600" />
+          <RiAlertLine className="w-4 h-4 text-brand-orange" />
           Content Integrity Analysis
         </h3>
         <div className="pl-6">
@@ -287,18 +291,18 @@ export default function ResultsPage({
       content: (
         <div className="space-y-6">
           {/* Content Validation Report */}
-          <div className="relative bg-gray-900 rounded-2xl p-8 text-white shadow-xl overflow-hidden">
+          <div className="relative bg-brand-dark-green rounded-2xl p-8 text-white shadow-xl overflow-hidden">
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-5">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full blur-3xl"></div>
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-slate-500 rounded-full blur-3xl"></div>
+              <div className="absolute top-0 right-0 w-64 h-64 bg-brand-orange rounded-full blur-3xl"></div>
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-brand-lime-green rounded-full blur-3xl"></div>
             </div>
             
             <div className="relative z-10">
               <div className="flex items-start gap-8">
                 <div className="flex-shrink-0">
-                  <div className="relative w-32 h-32 rounded-full border-4 border-white/20 bg-blue-600/20 backdrop-blur-sm flex items-center justify-center">
-                    <div className="absolute inset-0 rounded-full bg-blue-600/30 animate-pulse"></div>
+                  <div className="relative w-32 h-32 rounded-full border-4 border-white/20 bg-brand-orange/20 backdrop-blur-sm flex items-center justify-center">
+                    <div className="absolute inset-0 rounded-full bg-brand-orange/30"></div>
                     <span className="relative z-10 text-5xl font-bold">
                       {result.results?.final_attribution?.total_score
                         ? Math.round(result.results.final_attribution.total_score * 100)
@@ -336,14 +340,14 @@ export default function ResultsPage({
 
           {/* Generated Output Section */}
           {result && (
-            <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-lg">
+            <div className="bg-white rounded-2xl border border-brand-mint-green/30 p-8 shadow-lg">
               <div className="flex items-center gap-3 mb-8">
-                <div className="p-3 bg-blue-600 rounded-lg">
+                <div className="p-3 bg-brand-orange rounded-lg">
                   <RiVideoLine className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900">Generated Output</h3>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-[3.0fr_1fr] gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-[4.2fr_1.2fr] gap-8">
                 {/* Left side - Video */}
                 <div className="w-full">
                   {matchedExampleData?.results?.generated_video?.video_path ? (
@@ -372,9 +376,9 @@ export default function ResultsPage({
                 <div className="bg-white rounded-xl border border-gray-200 p-5 flex flex-col justify-start shadow-md">
                   <h4 className="text-sm font-bold text-gray-700 mb-6 uppercase tracking-wider">Video Information</h4>
                   <div className="space-y-3">
-                    <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-300 hover:shadow-sm transition-all duration-300">
+                    <div className="p-4 bg-brand-cream/30 rounded-lg border border-brand-mint-green/20 hover:border-brand-orange hover:shadow-sm transition-all duration-300">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-green-600 rounded-lg">
+                        <div className="p-2 bg-brand-dark-green rounded-lg">
                           <RiCheckboxCircleLine className="w-4 h-4 text-white" />
                         </div>
                         <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">Status</span>
@@ -384,9 +388,9 @@ export default function ResultsPage({
                       </div>
                     </div>
                     
-                    <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-300 hover:shadow-sm transition-all duration-300">
+                    <div className="p-4 bg-brand-cream/30 rounded-lg border border-brand-mint-green/20 hover:border-brand-orange hover:shadow-sm transition-all duration-300">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-blue-600 rounded-lg">
+                        <div className="p-2 bg-brand-orange rounded-lg">
                           <RiTimeLine className="w-4 h-4 text-white" />
                         </div>
                         <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">Processing Time</span>
@@ -398,10 +402,10 @@ export default function ResultsPage({
                       </div>
                     </div>
                     
-                    <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-300 hover:shadow-sm transition-all duration-300">
+                    <div className="p-4 bg-brand-cream/30 rounded-lg border border-brand-mint-green/20 hover:border-brand-orange hover:shadow-sm transition-all duration-300">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-slate-600 rounded-lg">
-                          <RiHdLine className="w-4 h-4 text-white" />
+                        <div className="p-2 bg-brand-lime-green rounded-lg">
+                          <RiHdLine className="w-4 h-4 text-brand-dark-green" />
                         </div>
                         <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">Resolution</span>
                       </div>
@@ -412,9 +416,9 @@ export default function ResultsPage({
                       </div>
                     </div>
                     
-                    <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-300 hover:shadow-sm transition-all duration-300">
+                    <div className="p-4 bg-brand-cream/30 rounded-lg border border-brand-mint-green/20 hover:border-brand-orange hover:shadow-sm transition-all duration-300">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-orange-600 rounded-lg">
+                        <div className="p-2 bg-brand-orange rounded-lg">
                           <RiTimerLine className="w-4 h-4 text-white" />
                         </div>
                         <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">Duration</span>
@@ -428,10 +432,10 @@ export default function ResultsPage({
                       </div>
                     </div>
                     
-                    <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-300 hover:shadow-sm transition-all duration-300">
+                    <div className="p-4 bg-brand-cream/30 rounded-lg border border-brand-mint-green/20 hover:border-brand-orange hover:shadow-sm transition-all duration-300">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-gray-600 rounded-lg">
-                          <RiCalendarLine className="w-4 h-4 text-white" />
+                        <div className="p-2 bg-brand-mint-green rounded-lg">
+                          <RiCalendarLine className="w-4 h-4 text-brand-dark-green" />
                         </div>
                         <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">Timestamp</span>
                       </div>
@@ -546,11 +550,11 @@ export default function ResultsPage({
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 relative">
+    <div className="min-h-screen bg-brand-cream relative">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-100/20 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-slate-100/20 rounded-full blur-3xl"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-brand-mint-green/40 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-brand-lime-green/40 rounded-full blur-3xl"></div>
       </div>
 
       {/* Header */}
@@ -565,7 +569,7 @@ export default function ResultsPage({
             </div>
             <button
               onClick={onNewAnalysis}
-              className="group px-6 py-2.5 bg-gray-900 text-white rounded-xl font-medium hover:bg-gray-800 transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg hover:scale-105"
+              className="group px-6 py-2.5 bg-brand-orange text-white rounded-xl font-medium hover:bg-brand-orange/90 transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg hover:scale-105"
             >
               <span>New Analysis</span>
               <RiArrowRightLine className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -578,9 +582,9 @@ export default function ResultsPage({
         <div className="max-w-[1600px] mx-auto">
           {/* Page Title */}
           <div className="mb-8 animate-fade-in">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-full border border-blue-100 mb-4">
-              <RiCheckboxCircleLine className="w-4 h-4 text-blue-600" />
-              <span className="text-sm font-medium text-blue-700">Analysis Complete</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-brand-mint-green/50 rounded-full border border-brand-lime-green/50 mb-4">
+              <RiCheckboxCircleLine className="w-4 h-4 text-brand-orange" />
+              <span className="text-sm font-medium text-brand-dark-green">Analysis Complete</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3">
               Analysis Results
@@ -592,14 +596,14 @@ export default function ResultsPage({
 
           {/* Analyzed Prompt Card */}
           <div className="mb-8 animate-fade-in-up">
-            <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300">
+            <div className="bg-white rounded-xl p-6 shadow-lg border border-brand-mint-green/30 hover:shadow-xl transition-all duration-300">
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-2.5 bg-blue-600 rounded-lg">
+                <div className="p-2.5 bg-brand-orange rounded-lg">
                   <RiFileTextLine className="w-5 h-5 text-white" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">Analyzed Content Prompt</h3>
               </div>
-              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div className="bg-brand-cream/30 rounded-lg p-4 border border-brand-mint-green/20">
                 <p className="text-gray-700 leading-relaxed">{prompt}</p>
               </div>
             </div>
@@ -608,15 +612,15 @@ export default function ResultsPage({
           {/* Tabbed Content */}
           <div className="space-y-6 animate-fade-in-up delay-200">
             {/* Tab Navigation */}
-            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide pl-1 pt-2">
               {visibleTabs.map(tab => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`group relative px-6 py-3 text-sm font-semibold whitespace-nowrap transition-all duration-300 rounded-xl ${
+                  className={`group relative px-6 py-3 text-sm font-semibold whitespace-nowrap transition-all duration-300 rounded-xl flex-shrink-0 ${
                     activeTab === tab.id
-                      ? 'bg-blue-600 text-white shadow-md scale-105'
-                      : 'bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-gray-200 hover:border-gray-300 hover:shadow-sm'
+                      ? 'bg-brand-orange text-white shadow-md scale-105'
+                      : 'bg-white text-gray-600 hover:bg-brand-cream/30 hover:text-gray-900 border border-brand-mint-green/30 hover:border-brand-orange hover:shadow-sm'
                   }`}
                 >
                   {tab.label}
@@ -628,7 +632,7 @@ export default function ResultsPage({
             </div>
             
             {/* Tab Content */}
-            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-gray-200 min-h-[600px]">
+            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-brand-mint-green/30 min-h-[600px]">
               <div className="animate-fade-in">
                 {visibleTabs.find(tab => tab.id === activeTab)?.content}
               </div>
@@ -639,4 +643,3 @@ export default function ResultsPage({
     </div>
   );
 }
-

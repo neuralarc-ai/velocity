@@ -28,7 +28,13 @@ export default function MetricCard({
       )}
       <h4 className="text-sm font-semibold text-gray-900 mb-2">{title}</h4>
       {status ? (
-        <button className="w-full mb-2 px-3 py-2 bg-black text-white rounded text-sm font-medium hover:bg-gray-800 transition-colors">
+        <button className={`w-full mb-2 px-3 py-2 rounded text-sm font-medium transition-colors ${
+          status === 'Complete' || status === 'Passed'
+            ? 'bg-brand-dark-green text-white hover:opacity-90'
+            : status === 'Approved'
+            ? 'bg-brand-orange text-white hover:opacity-90'
+            : 'bg-brand-dark-green text-white hover:opacity-90'
+        }`}>
           {status}
         </button>
       ) : (

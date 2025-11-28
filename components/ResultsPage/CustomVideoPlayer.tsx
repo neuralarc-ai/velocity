@@ -130,10 +130,10 @@ export default function CustomVideoPlayer({ src, className = '' }: CustomVideoPl
           onClick={handleProgressClick}
         >
           <div
-            className="h-full bg-blue-500 rounded-full transition-all"
+            className="h-full bg-brand-orange rounded-full transition-all"
             style={{ width: `${progressPercent}%` }}
           >
-            <div className="h-full w-3 bg-blue-500 rounded-full -mt-0.5 ml-auto opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div className="h-full w-3 bg-brand-orange rounded-full -mt-0.5 ml-auto opacity-0 group-hover:opacity-100 transition-opacity"></div>
           </div>
         </div>
 

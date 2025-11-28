@@ -80,20 +80,20 @@ export default function ProcessingPage({ prompt, currentStepIndex, totalSteps, o
   }, [currentStepIndex, totalSteps, onComplete]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 relative overflow-hidden">
+    <div className="min-h-screen bg-brand-cream relative overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-100/30 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-slate-100/30 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-20 left-10 w-72 h-72 bg-brand-mint-green/40 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-brand-lime-green/40 rounded-full blur-3xl animate-pulse delay-1000"></div>
       </div>
 
       <div className="relative z-10 px-4 py-12">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12 animate-fade-in">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-full border border-blue-100 mb-6">
-              <RiLoader4Line className="w-4 h-4 text-blue-600 animate-spin" />
-              <span className="text-sm font-medium text-blue-700">Analysis in Progress</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-brand-mint-green/50 rounded-full border border-brand-lime-green/50 mb-6">
+              <RiLoader4Line className="w-4 h-4 text-brand-orange animate-spin" />
+              <span className="text-sm font-medium text-brand-dark-green">Analysis in Progress</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
               Processing Your Content
@@ -105,25 +105,25 @@ export default function ProcessingPage({ prompt, currentStepIndex, totalSteps, o
 
           {/* Progress Card */}
           <div className="mb-10 animate-fade-in-up">
-            <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-brand-mint-green/30">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-2.5 bg-blue-600 rounded-lg">
+                  <div className="p-2.5 bg-brand-orange rounded-lg">
                     <RiBarChartLine className="w-5 h-5 text-white" />
                   </div>
                   <span className="text-lg font-semibold text-gray-900">Analysis Progress</span>
                 </div>
                 <div className="text-right">
-                  <span className="text-3xl font-bold text-blue-600">
+                  <span className="text-3xl font-bold text-brand-orange">
                     {Math.round(progress)}%
                   </span>
                 </div>
               </div>
               
               {/* Progress Bar */}
-              <div className="relative w-full h-2.5 bg-gray-200 rounded-full overflow-hidden">
+              <div className="relative w-full h-3 bg-brand-mint-green/30 rounded-full overflow-hidden">
                 <div
-                  className="absolute top-0 left-0 h-full rounded-full transition-all duration-500 ease-out relative overflow-hidden bg-blue-600"
+                  className="absolute top-0 left-0 h-full rounded-full transition-all duration-500 ease-out relative overflow-hidden gradient-progress"
                   style={{
                     width: `${progress}%`,
                   }}
@@ -151,10 +151,10 @@ export default function ProcessingPage({ prompt, currentStepIndex, totalSteps, o
                   key={step.id}
                   className={`group relative rounded-xl p-5 transition-all duration-300 ${
                     isActive
-                      ? 'bg-blue-50 border-2 border-blue-500 scale-105'
+                      ? 'bg-brand-mint-green/50 border-2 border-brand-orange scale-105 shadow-md'
                       : isCompleted
-                      ? 'bg-white border border-gray-200 hover:border-gray-300'
-                      : 'bg-gray-50 border border-gray-200 opacity-60'
+                      ? 'bg-white border border-brand-lime-green/50 hover:border-brand-mint-green'
+                      : 'bg-brand-cream/30 border border-brand-mint-green/30 opacity-60'
                   }`}
                   style={{
                     animationDelay: `${index * 50}ms`,
@@ -164,10 +164,10 @@ export default function ProcessingPage({ prompt, currentStepIndex, totalSteps, o
                     <div
                       className={`p-3 rounded-lg transition-all duration-300 ${
                         isActive
-                          ? 'bg-blue-600 text-white'
+                          ? 'bg-brand-orange text-white'
                           : isCompleted
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-gray-200 text-gray-400'
+                          ? 'bg-brand-lime-green text-brand-dark-green'
+                          : 'bg-brand-mint-green/50 text-gray-400'
                       }`}
                     >
                       {isActive ? (
@@ -182,16 +182,16 @@ export default function ProcessingPage({ prompt, currentStepIndex, totalSteps, o
                       <h3
                         className={`font-semibold mb-1 transition-colors ${
                           isActive
-                            ? 'text-blue-700'
+                            ? 'text-brand-orange'
                             : isCompleted
-                            ? 'text-gray-900'
+                            ? 'text-brand-dark-green'
                             : 'text-gray-500'
                         }`}
                       >
                         {step.title}
                       </h3>
                       {isActive && (
-                        <p className="text-xs text-blue-600 mt-1 animate-pulse">Processing...</p>
+                        <p className="text-xs text-brand-orange mt-1 animate-pulse">Processing...</p>
                       )}
                     </div>
                   </div>
@@ -202,8 +202,8 @@ export default function ProcessingPage({ prompt, currentStepIndex, totalSteps, o
 
           {/* Prompt Display */}
           <div className="mt-10 animate-fade-in-up delay-300">
-            <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50">
-              <p className="text-sm font-medium text-gray-500 mb-2">Analyzing Prompt</p>
+            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-brand-mint-green/40">
+              <p className="text-sm font-medium text-brand-dark-green mb-2">Analyzing Prompt</p>
               <p className="text-gray-700 line-clamp-2">{prompt}</p>
             </div>
           </div>

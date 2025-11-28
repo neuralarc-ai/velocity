@@ -58,27 +58,32 @@ export default function ProcessTraceHorizontal({ steps, currentStep }: ProcessTr
     switch (status) {
       case 'Complete':
       case 'Passed':
+        return (
+          <span className="px-2 py-1 rounded-full text-xs font-medium bg-brand-lime-green/50 text-brand-dark-green border border-brand-lime-green">
+            {status}
+          </span>
+        );
       case 'Approved':
         return (
-          <span className="px-2 py-1 rounded-full text-xs font-medium bg-black text-white">
+          <span className="px-2 py-1 rounded-full text-xs font-medium bg-brand-dark-green text-white">
             {status}
           </span>
         );
       case 'Running':
         return (
-          <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-600 text-white animate-pulse">
+          <span className="px-2 py-1 rounded-full text-xs font-medium bg-brand-orange text-white animate-pulse">
             {status}
           </span>
         );
       case 'Pending':
         return (
-          <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-300 text-gray-600">
+          <span className="px-2 py-1 rounded-full text-xs font-medium bg-brand-cream/50 text-gray-600 border border-brand-mint-green/30">
             {status}
           </span>
         );
       default:
         return (
-          <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-700 text-white">
+          <span className="px-2 py-1 rounded-full text-xs font-medium bg-brand-mint-green/50 text-brand-dark-green">
             {status}
           </span>
         );
@@ -150,11 +155,11 @@ export default function ProcessTraceHorizontal({ steps, currentStep }: ProcessTr
                 <div
                   className={`bg-white rounded-xl border-2 p-4 shadow-md transition-all duration-300 h-full flex flex-col ${
                     isRunning
-                      ? 'border-blue-300 bg-blue-50'
+                      ? 'border-brand-orange bg-brand-mint-green/30'
                       : isCompleted
-                      ? 'border-green-200 bg-green-50/30'
-                      : 'border-gray-200 bg-white'
-                  } ${isActive ? 'ring-2 ring-blue-400 ring-offset-2 shadow-lg' : ''}`}
+                      ? 'border-brand-lime-green bg-brand-lime-green/20'
+                      : 'border-brand-mint-green/20 bg-white'
+                  } ${isActive ? 'ring-2 ring-brand-orange ring-offset-2 shadow-lg' : ''}`}
                 >
                   {/* Step Number and Title */}
                   <div className="flex items-start justify-between mb-3">
@@ -176,10 +181,10 @@ export default function ProcessTraceHorizontal({ steps, currentStep }: ProcessTr
                     <div
                       className={`w-10 h-10 rounded-full border-2 border-white flex items-center justify-center transition-all duration-300 ${
                         isCompleted
-                          ? 'bg-green-500 shadow-lg'
+                          ? 'bg-brand-dark-green shadow-lg'
                           : isRunning
-                          ? 'bg-blue-500 shadow-lg animate-pulse'
-                          : 'bg-gray-300'
+                          ? 'bg-brand-orange shadow-lg animate-pulse'
+                          : 'bg-brand-mint-green/50'
                       }`}
                     >
                       {isCompleted && (
