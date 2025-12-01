@@ -99,8 +99,8 @@ export default function MonetizationStatus({ approved, result, matchedExampleDat
         if (topOwner.includes('Arka Media Works')) {
           return 'Arka Media Works';
         }
-        if (topOwner.includes('Marvel') || topOwner.includes('Disney')) {
-          return 'Disney/Marvel';
+        if (topOwner.includes('Marvel') || topOwner.includes('Sony')) {
+          return 'Sony/Marvel';
         }
         return topOwner;
       }
@@ -113,8 +113,8 @@ export default function MonetizationStatus({ approved, result, matchedExampleDat
       if (topIp.owner.includes('Arka Media Works')) {
         return 'Arka Media Works';
       }
-      if (topIp.owner.includes('Marvel') || topIp.owner.includes('Disney')) {
-        return 'Disney/Marvel';
+      if (topIp.owner.includes('Marvel') || topIp.owner.includes('Sony')) {
+        return 'Sony/Marvel';
       }
       return topIp.owner;
     }

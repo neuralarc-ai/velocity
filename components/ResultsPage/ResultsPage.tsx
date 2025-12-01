@@ -738,7 +738,7 @@ export default function ResultsPage({
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3">
               Analysis Results
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl">
+            <p className="text-lg text-gray-600 max-w-5xl">
               Complete analysis of your generated content including IP attribution, safety checks, and monetization validation.
             </p>
           </div>

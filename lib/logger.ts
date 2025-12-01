@@ -89,10 +89,8 @@ export class PipelineLogger {
     if (this.logs.length > this.maxLogs) {
       this.logs = this.logs.slice(-this.maxLogs);
     }
-    // Also log to console in development
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`[${entry.level.toUpperCase()}] ${entry.event}`, entry);
-    }
+    // Console logging is handled by ProcessingPage component with formatted output
+    // Removed console.log here to avoid duplicate/unformatted logs
   }
 
   getLogs(): LogEntry[] {

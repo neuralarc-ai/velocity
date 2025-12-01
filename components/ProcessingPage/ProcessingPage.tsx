@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import {
   RiSearchLine,
   RiRefreshLine,
@@ -49,6 +49,162 @@ const ANALYSIS_STEPS: AnalysisStep[] = [
 export default function ProcessingPage({ prompt, currentStepIndex, totalSteps, onComplete, failedSteps = [], generationBlocked = false }: ProcessingPageProps) {
   const [steps, setSteps] = useState<AnalysisStep[]>(ANALYSIS_STEPS);
   const [progress, setProgress] = useState(0);
+  const [previousStepIndex, setPreviousStepIndex] = useState(-1);
+  
+  // Refs to track what has been logged to prevent duplicates
+  const loggedStepsRef = useRef<Set<string>>(new Set());
+  const loggedCompletionRef = useRef(false);
+  const loggedInitialRef = useRef<string | null>(null);
+  const firstFailedStepIndexRef = useRef<number | null>(null);
+
+  // Console logging for step changes
+  useEffect(() => {
+    if (currentStepIndex !== previousStepIndex && currentStepIndex >= 0) {
+      // Check if previous step failed
+      if (previousStepIndex >= 0 && previousStepIndex < ANALYSIS_STEPS.length) {
+        const previousStep = ANALYSIS_STEPS[previousStepIndex];
+        const previousStepId = previousStep.id;
+        const previousStepFailed = failedSteps.includes(previousStepId);
+        
+        if (previousStepFailed) {
+          // Mark this as the first failed step
+          if (firstFailedStepIndexRef.current === null) {
+            firstFailedStepIndexRef.current = previousStepIndex;
+            const previousFailedKey = `failed-${previousStepIndex}`;
+            if (!loggedStepsRef.current.has(previousFailedKey)) {
+              loggedStepsRef.current.add(previousFailedKey);
+              console.log(`%c❌ STEP ${previousStepIndex + 1}/${totalSteps}: ${previousStep.title} - FAILED`, 
+                'color: #FF4444; font-weight: bold; font-size: 14px;');
+              console.log(`%c⚠️  Error: Step execution failed`, 'color: #FF6666;');
+              console.log(`%c🛑 Pipeline stopped - no further steps will be executed`, 
+                'color: #FF6B35; font-weight: bold;');
+            }
+          }
+          // Don't log completion or continue - stop here
+          setPreviousStepIndex(currentStepIndex);
+          return;
+        } else {
+          // Previous step completed successfully
+          const previousCompleteKey = `completed-${previousStepIndex}`;
+          if (previousStep && !loggedStepsRef.current.has(previousCompleteKey)) {
+            loggedStepsRef.current.add(previousCompleteKey);
+            console.log(`%c✅ STEP ${previousStepIndex + 1}/${totalSteps}: ${previousStep.title} - COMPLETED`, 
+              'color: #4ECDC4; font-weight: bold; font-size: 14px;');
+            console.log(`%c✓ Step finished successfully`, 'color: #95E1D3;');
+          }
+        }
+      }
+      
+      // Check if we should stop logging (a previous step failed)
+      if (firstFailedStepIndexRef.current !== null && currentStepIndex > firstFailedStepIndexRef.current) {
+        // A step has already failed, don't log subsequent steps
+        setPreviousStepIndex(currentStepIndex);
+        return;
+      }
+      
+      // Check if current step is failed
+      const currentStep = ANALYSIS_STEPS[currentStepIndex];
+      if (currentStep) {
+        const currentStepId = currentStep.id;
+        const currentStepFailed = failedSteps.includes(currentStepId);
+        
+        if (currentStepFailed) {
+          // Mark this as the first failed step
+          if (firstFailedStepIndexRef.current === null) {
+            firstFailedStepIndexRef.current = currentStepIndex;
+            const currentFailedKey = `failed-${currentStepIndex}`;
+            if (!loggedStepsRef.current.has(currentFailedKey)) {
+              loggedStepsRef.current.add(currentFailedKey);
+              console.log(`%c❌ STEP ${currentStepIndex + 1}/${totalSteps}: ${currentStep.title} - FAILED`, 
+                'color: #FF4444; font-weight: bold; font-size: 14px;');
+              console.log(`%c⚠️  Error: Step execution failed`, 'color: #FF6666;');
+              console.log(`%c🛑 Pipeline stopped - no further steps will be executed`, 
+                'color: #FF6B35; font-weight: bold;');
+            }
+          }
+          setPreviousStepIndex(currentStepIndex);
+          return;
+        }
+      }
+      
+      // Then, log start of new step (only if no failure occurred)
+      const stepStartKey = `start-${currentStepIndex}`;
+      
+      // Only log if we haven't logged this step start before and no step has failed
+      if (currentStep && !loggedStepsRef.current.has(stepStartKey) && firstFailedStepIndexRef.current === null) {
+        loggedStepsRef.current.add(stepStartKey);
+        
+        console.log(`%c🚀 STEP ${currentStepIndex + 1}/${totalSteps}: ${currentStep.title}`, 
+          'color: #FF6B35; font-weight: bold; font-size: 14px;');
+        console.log(`%c📝 Status: STARTING`, 'color: #4ECDC4; font-weight: bold;');
+        
+        // Log step-specific details
+        switch (currentStep.id) {
+          case 'prompt-receipt':
+            console.log(`%c📋 Processing prompt: "${prompt}"`, 'color: #95E1D3;');
+            console.log(`%c⏱️  Receiving and validating prompt input...`, 'color: #95E1D3;');
+            break;
+          case 'semantic-analysis':
+            console.log(`%c🔍 Performing semantic analysis on prompt...`, 'color: #95E1D3;');
+            console.log(`%c📊 Analyzing: "${prompt.substring(0, 100)}${prompt.length > 100 ? '...' : ''}"`, 'color: #95E1D3;');
+            console.log(`%c🔎 Extracting semantic features and intent...`, 'color: #95E1D3;');
+            break;
+          case 'safety-check':
+            console.log(`%c🛡️  Running pre-generation safety check...`, 'color: #95E1D3;');
+            console.log(`%c🔒 Checking for IP conflicts and violations...`, 'color: #95E1D3;');
+            console.log(`%c⚠️  Validating content safety before generation...`, 'color: #95E1D3;');
+            break;
+          case 'content-retrieval':
+            console.log(`%c🔎 Searching IP content database...`, 'color: #95E1D3;');
+            console.log(`%c📚 Retrieving relevant IP content based on prompt...`, 'color: #95E1D3;');
+            console.log(`%c🎯 Matching prompt to existing IP sources...`, 'color: #95E1D3;');
+            break;
+          case 'initial-attribution':
+            console.log(`%c📊 Calculating initial IP attribution scores...`, 'color: #95E1D3;');
+            console.log(`%c📈 Analyzing IP relevance and confidence...`, 'color: #95E1D3;');
+            console.log(`%c💯 Computing attribution percentages...`, 'color: #95E1D3;');
+            break;
+          case 'prompt-augmentation':
+            console.log(`%c✨ Augmenting prompt with IP context...`, 'color: #95E1D3;');
+            console.log(`%c🔧 Enhancing prompt with retrieved IP information...`, 'color: #95E1D3;');
+            console.log(`%c📝 Generating augmented prompt for video generation...`, 'color: #95E1D3;');
+            break;
+          case 'video-generation':
+            console.log(`%c🎬 Starting video generation process...`, 'color: #95E1D3;');
+            console.log(`%c🎥 Generating video from augmented prompt...`, 'color: #95E1D3;');
+            console.log(`%c⚙️  Processing video generation request...`, 'color: #95E1D3;');
+            break;
+          case 'output-analysis':
+            console.log(`%c🔍 Analyzing generated video output...`, 'color: #95E1D3;');
+            console.log(`%c👁️  Detecting objects and content in video...`, 'color: #95E1D3;');
+            console.log(`%c📊 Extracting visual features and metadata...`, 'color: #95E1D3;');
+            break;
+          case 'final-attribution':
+            console.log(`%c📊 Calculating final IP attribution scores...`, 'color: #95E1D3;');
+            console.log(`%c📈 Comparing post-generation attribution...`, 'color: #95E1D3;');
+            console.log(`%c💯 Finalizing attribution percentages...`, 'color: #95E1D3;');
+            break;
+          case 'contamination-detection':
+            console.log(`%c🛡️  Detecting content contamination...`, 'color: #95E1D3;');
+            console.log(`%c🔍 Scanning for unauthorized IP usage...`, 'color: #95E1D3;');
+            console.log(`%c⚠️  Checking contamination thresholds...`, 'color: #95E1D3;');
+            break;
+          case 'post-safety-check':
+            console.log(`%c🛡️  Running post-generation safety check...`, 'color: #95E1D3;');
+            console.log(`%c🔒 Validating generated content safety...`, 'color: #95E1D3;');
+            console.log(`%c✅ Final safety validation...`, 'color: #95E1D3;');
+            break;
+          case 'monetization-validation':
+            console.log(`%c💰 Validating monetization eligibility...`, 'color: #95E1D3;');
+            console.log(`%c💵 Checking monetization requirements...`, 'color: #95E1D3;');
+            console.log(`%c✅ Final monetization validation...`, 'color: #95E1D3;');
+            break;
+        }
+      }
+      
+      setPreviousStepIndex(currentStepIndex);
+    }
+  }, [currentStepIndex, totalSteps, prompt, failedSteps]);
 
   useEffect(() => {
     // Check if all steps are complete or if generation was blocked
@@ -75,28 +231,48 @@ export default function ProcessingPage({ prompt, currentStepIndex, totalSteps, o
       'monetization-validation': 11,
     };
 
-    // Update step statuses
+    // Update step statuses and log completions/failures
     setSteps((prevSteps) =>
       prevSteps.map((step, index) => {
         const stepId = step.id;
         const isFailed = failedSteps.includes(stepId);
+        const wasCompleted = step.status === 'completed';
+        const wasActive = step.status === 'active';
         
-        // If generation was blocked, mark steps after prompt-augmentation as skipped
-        if (generationBlocked && index > 5) {
-          return { ...step, status: 'skipped' };
-        }
-        
+        // Only mark as failed if actually failed - don't mark as skipped based on generationBlocked
+        // because the pipeline continues executing even when generation is blocked
         if (isFailed) {
+          // Track the first failed step
+          if (firstFailedStepIndexRef.current === null) {
+            firstFailedStepIndexRef.current = index;
+          }
+          
+          if (step.status !== 'failed' && !loggedStepsRef.current.has(`failed-${index}`)) {
+            loggedStepsRef.current.add(`failed-${index}`);
+            console.log(`%c❌ STEP ${index + 1}/${totalSteps}: ${step.title} - FAILED`, 
+              'color: #FF4444; font-weight: bold; font-size: 14px;');
+            console.log(`%c⚠️  Error: Step execution failed`, 'color: #FF6666;');
+            // Only show stop message for the first failed step
+            if (firstFailedStepIndexRef.current === index) {
+              console.log(`%c🛑 Pipeline stopped - no further steps will be executed`, 
+                'color: #FF6B35; font-weight: bold;');
+            }
+          }
           return { ...step, status: 'failed' };
         } else if (isComplete) {
-          // Only mark as completed if not failed/skipped
-          if (generationBlocked && index > 5) {
-            return { ...step, status: 'skipped' };
+          // Mark as completed if not failed
+          if (!wasCompleted && step.status !== 'completed' && !loggedStepsRef.current.has(`completed-${index}`)) {
+            console.log(`%c✅ STEP ${index + 1}/${totalSteps}: ${step.title} - COMPLETED`, 
+              'color: #4ECDC4; font-weight: bold; font-size: 14px;');
+            console.log(`%c✓ Step finished successfully`, 'color: #95E1D3;');
+            loggedStepsRef.current.add(`completed-${index}`);
           }
           return { ...step, status: 'completed' };
         } else if (index < currentStepIndex) {
+          // Completion logging is handled by the step change effect, just update status
           return { ...step, status: 'completed' };
         } else if (index === currentStepIndex) {
+          // Don't log ACTIVE status here - it's already logged in the step change effect
           return { ...step, status: 'active' };
         } else {
           return { ...step, status: 'pending' };
@@ -105,13 +281,66 @@ export default function ProcessingPage({ prompt, currentStepIndex, totalSteps, o
     );
 
     // Call onComplete when all steps are done or generation is blocked
-    if (isComplete) {
+    if (isComplete && !loggedCompletionRef.current) {
+      loggedCompletionRef.current = true;
+      
+      if (generationBlocked) {
+        console.log(`%c⚠️  GENERATION BLOCKED`, 
+          'color: #FF6B35; font-weight: bold; font-size: 16px; background: #FFF5E5; padding: 4px 8px; border-radius: 4px;');
+        console.log(`%c🚫 Video generation was blocked due to safety check failure`, 'color: #FF6B35;');
+        console.log(`%c📊 Analysis pipeline completed - all steps executed`, 'color: #95E1D3;');
+        console.log(`%c📊 Progress: ${Math.round(calculatedProgress)}%`, 'color: #95E1D3;');
+      } else {
+        console.log(`%c🎉 PROCESSING COMPLETE`, 
+          'color: #4ECDC4; font-weight: bold; font-size: 16px; background: #E5FFF5; padding: 4px 8px; border-radius: 4px;');
+        console.log(`%c✅ All ${totalSteps} steps completed successfully`, 'color: #4ECDC4;');
+        console.log(`%c📊 Progress: ${Math.round(calculatedProgress)}%`, 'color: #95E1D3;');
+      }
+      
+      if (failedSteps.length > 0) {
+        console.log(`%c⚠️  Failed Steps: ${failedSteps.length}`, 
+          'color: #FF6B35; font-weight: bold;');
+        failedSteps.forEach((stepId) => {
+          const step = ANALYSIS_STEPS.find(s => s.id === stepId);
+          if (step) {
+            console.log(`%c  - ${step.title}`, 'color: #FF6666;');
+          }
+        });
+      }
+      
       const timer = setTimeout(() => {
+        console.log(`%c🏁 Finalizing results and transitioning to results page...`, 
+          'color: #4ECDC4; font-weight: bold;');
         onComplete();
       }, generationBlocked ? 1000 : 500); // Give a bit more time to see the failure
       return () => clearTimeout(timer);
     }
   }, [currentStepIndex, totalSteps, onComplete, failedSteps, generationBlocked]);
+
+  // Initial logging when component mounts or prompt changes
+  useEffect(() => {
+    // Only log once per unique prompt/totalSteps combination
+    const logKey = `${prompt}-${totalSteps}`;
+    if (loggedInitialRef.current !== logKey) {
+      console.log(`%c═══════════════════════════════════════════════════════`, 
+        'color: #4ECDC4; font-weight: bold;');
+      console.log(`%c🚀 VELOCITY PIPELINE STARTED`, 
+        'color: #FF6B35; font-weight: bold; font-size: 18px;');
+      console.log(`%c═══════════════════════════════════════════════════════`, 
+        'color: #4ECDC4; font-weight: bold;');
+      console.log(`%c📝 Prompt: "${prompt}"`, 'color: #95E1D3; font-weight: bold;');
+      console.log(`%c📊 Total Steps: ${totalSteps}`, 'color: #95E1D3;');
+      console.log(`%c⏱️  Starting pipeline execution...`, 'color: #95E1D3;');
+      console.log(`%c═══════════════════════════════════════════════════════`, 
+        'color: #4ECDC4; font-weight: bold;');
+      loggedInitialRef.current = logKey;
+      
+      // Reset step tracking when starting a new pipeline
+      loggedStepsRef.current.clear();
+      loggedCompletionRef.current = false;
+      firstFailedStepIndexRef.current = null;
+    }
+  }, [prompt, totalSteps]);
 
   return (
     <div className="min-h-screen bg-brand-cream relative overflow-hidden">
