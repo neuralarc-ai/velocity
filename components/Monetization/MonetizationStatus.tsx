@@ -127,13 +127,13 @@ export default function MonetizationStatus({ approved, result, matchedExampleDat
 
   if (isBlocked || hasViolations || !isActuallyApproved) {
     return (
-      <div className="bg-white rounded-lg border border-red-200 p-6">
-        <div className="flex items-center gap-2 mb-6">
+      <div className="bg-white rounded-lg border border-red-200 p-4">
+        <div className="flex items-center gap-2 mb-4">
           <RiMoneyDollarCircleLine className="w-5 h-5 text-red-600" />
           <h3 className="text-lg font-semibold text-gray-900">Monetization Status</h3>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           <div className="flex items-start gap-3 p-4 bg-red-50 rounded-lg border border-red-200">
             <RiCloseCircleLine className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
             <div className="flex-1">
@@ -178,13 +178,13 @@ export default function MonetizationStatus({ approved, result, matchedExampleDat
   // Only show approved state if truly safe
   if (isActuallyApproved) {
     return (
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <div className="flex items-center gap-2 mb-6">
+      <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="flex items-center gap-2 mb-4">
           <RiMoneyDollarCircleLine className="w-5 h-5 text-gray-600" />
           <h3 className="text-lg font-semibold text-gray-900">Monetization Status</h3>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
             <RiCheckboxCircleLine className="w-5 h-5 text-green-600 flex-shrink-0" />
             <div>
@@ -201,7 +201,7 @@ export default function MonetizationStatus({ approved, result, matchedExampleDat
             </div>
           </div>
 
-          <button className="w-full mt-6 px-6 py-4 bg-black text-white rounded-lg font-semibold text-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2">
+          <button className="w-full mt-3 px-6 py-4 bg-black text-white rounded-lg font-semibold text-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2">
             <RiCheckboxCircleLine className="w-5 h-5" />
             All Compliance Checks Passed
           </button>
@@ -213,13 +213,13 @@ export default function MonetizationStatus({ approved, result, matchedExampleDat
   // If not actually approved but not blocked, show warning/not approved state
   if (hasMonetizationRisk && !isBlocked) {
     return (
-      <div className="bg-white rounded-lg border border-orange-200 p-6">
-        <div className="flex items-center gap-2 mb-6">
+      <div className="bg-white rounded-lg border border-orange-200 p-4">
+        <div className="flex items-center gap-2 mb-4">
           <RiMoneyDollarCircleLine className="w-5 h-5 text-orange-600" />
           <h3 className="text-lg font-semibold text-gray-900">Monetization Status</h3>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           <div className="flex items-start gap-3 p-4 bg-orange-50 rounded-lg border border-orange-200">
             <RiAlertLine className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
             <div className="flex-1">

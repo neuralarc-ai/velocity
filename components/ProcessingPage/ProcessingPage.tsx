@@ -199,14 +199,6 @@ export default function ProcessingPage({ prompt, currentStepIndex, totalSteps, o
               );
             })}
           </div>
-
-          {/* Prompt Display */}
-          <div className="mt-10 animate-fade-in-up delay-300">
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-brand-mint-green/40">
-              <p className="text-sm font-medium text-brand-dark-green mb-2">Analyzing Prompt</p>
-              <p className="text-gray-700 line-clamp-2">{prompt}</p>
-            </div>
-          </div>
         </div>
       </div>
     </div>

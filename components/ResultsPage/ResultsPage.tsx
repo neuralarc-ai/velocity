@@ -16,6 +16,7 @@ import SafetyChecks from './SafetyChecks';
 import VideoAnalysis from './VideoAnalysis';
 import IpSources from './IpSources';
 import CustomVideoPlayer from './CustomVideoPlayer';
+import Questions from './Questions';
 import {
   RiVideoLine,
   RiBarChartLine,
@@ -624,6 +625,11 @@ export default function ResultsPage({
       label: 'Execution Logs',
       content: <ProcessTrace steps={processSteps} />,
     },
+    {
+      id: 'questions',
+      label: 'Questions',
+      content: <Questions result={result} matchedExampleData={matchedExampleData} prompt={prompt} />,
+    },
   ];
 
   const visibleTabs = tabs.filter(tab => {
@@ -639,6 +645,8 @@ export default function ResultsPage({
                (matchedExampleData?.results?.initial_attribution && matchedExampleData?.results?.final_attribution);
       case 'execution-logs':
         return processSteps && processSteps.length > 0;
+      case 'questions':
+        return true; // Always show questions tab
       default:
         return false;
     }
@@ -727,7 +735,7 @@ export default function ResultsPage({
             </div>
             
             {/* Tab Content */}
-            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-brand-mint-green/30 min-h-[600px]">
+            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-brand-mint-green/30">
               <div className="animate-fade-in">
                 {visibleTabs.find(tab => tab.id === activeTab)?.content}
               </div>

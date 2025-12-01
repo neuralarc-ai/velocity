@@ -44,10 +44,6 @@ export default function LandingPage({ onStartAnalysis }: LandingPageProps) {
         <div className="w-full max-w-5xl">
           {/* Header */}
           <div className="text-center mb-16 animate-fade-in">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-brand-mint-green/50 rounded-full border border-brand-lime-green/50 mb-6">
-              <RiSparklingFill className="w-4 h-4 text-brand-orange" />
-              <span className="text-sm font-medium text-brand-dark-green">AI-Powered IP Attribution Platform</span>
-            </div>
             <h1 className="text-6xl md:text-7xl font-bold text-brand-dark-green mb-6 leading-tight">
               Velocity
             </h1>
@@ -83,7 +79,7 @@ export default function LandingPage({ onStartAnalysis }: LandingPageProps) {
                   onKeyDown={handleKeyPress}
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
-                  placeholder="e.g., 'athlete wearing Nike shoes running on a track' or 'people drinking Coca-Cola at a beach party'"
+                  placeholder="Enter your prompt here..."
                   className="w-full px-6 py-4 border-2 border-brand-mint-green/30 rounded-xl focus:ring-4 focus:ring-brand-orange/20 focus:border-brand-orange resize-none bg-white text-gray-900 placeholder-gray-400 transition-all duration-300 text-lg leading-relaxed"
                   rows={6}
                 />

@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
-import { RiPlayFill, RiPauseFill, RiVolumeUpFill, RiVolumeMuteFill, RiFullscreenFill } from 'react-icons/ri';
+import { RiPlayFill, RiPauseFill, RiVolumeUpFill, RiVolumeMuteFill, RiFullscreenFill, RiFullscreenExitFill } from 'react-icons/ri';
 
 interface CustomVideoPlayerProps {
   src: string;
@@ -10,6 +10,7 @@ interface CustomVideoPlayerProps {
 
 export default function CustomVideoPlayer({ src, className = '' }: CustomVideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -17,6 +18,7 @@ export default function CustomVideoPlayer({ src, className = '' }: CustomVideoPl
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
   const [showControls, setShowControls] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -37,6 +39,29 @@ export default function CustomVideoPlayer({ src, className = '' }: CustomVideoPl
       video.removeEventListener('loadedmetadata', updateDuration);
       video.removeEventListener('play', handlePlay);
       video.removeEventListener('pause', handlePause);
+    };
+  }, []);
+
+  // Handle fullscreen changes
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+      // Keep controls visible when entering fullscreen
+      if (document.fullscreenElement) {
+        setShowControls(true);
+      }
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
     };
   }, []);
 
@@ -79,16 +104,39 @@ export default function CustomVideoPlayer({ src, className = '' }: CustomVideoPl
     setIsMuted(newVolume === 0);
   };
 
-  const toggleFullscreen = () => {
-    const video = videoRef.current;
-    if (!video) return;
+  const toggleFullscreen = async () => {
+    const container = containerRef.current;
+    if (!container) return;
 
-    if (!document.fullscreenElement) {
-      video.requestFullscreen().catch(err => {
-        console.error('Error attempting to enable fullscreen:', err);
-      });
-    } else {
-      document.exitFullscreen();
+    try {
+      if (!document.fullscreenElement) {
+        // Request fullscreen on the container (not the video) to keep custom controls
+        if (container.requestFullscreen) {
+          await container.requestFullscreen();
+        } else if ((container as any).webkitRequestFullscreen) {
+          // Safari
+          await (container as any).webkitRequestFullscreen();
+        } else if ((container as any).mozRequestFullScreen) {
+          // Firefox
+          await (container as any).mozRequestFullScreen();
+        } else if ((container as any).msRequestFullscreen) {
+          // IE/Edge
+          await (container as any).msRequestFullscreen();
+        }
+      } else {
+        // Exit fullscreen
+        if (document.exitFullscreen) {
+          await document.exitFullscreen();
+        } else if ((document as any).webkitExitFullscreen) {
+          await (document as any).webkitExitFullscreen();
+        } else if ((document as any).mozCancelFullScreen) {
+          await (document as any).mozCancelFullScreen();
+        } else if ((document as any).msExitFullscreen) {
+          await (document as any).msExitFullscreen();
+        }
+      }
+    } catch (err) {
+      console.error('Error attempting to toggle fullscreen:', err);
     }
   };
 
@@ -103,14 +151,17 @@ export default function CustomVideoPlayer({ src, className = '' }: CustomVideoPl
 
   return (
     <div
-      className={`relative group bg-black rounded-xl overflow-hidden ${className}`}
+      ref={containerRef}
+      className={`relative group bg-black rounded-xl overflow-hidden ${className} ${
+        isFullscreen ? 'fixed inset-0 z-[9999] rounded-none' : ''
+      }`}
       onMouseEnter={() => setShowControls(true)}
-      onMouseLeave={() => setShowControls(false)}
+      onMouseLeave={() => !isFullscreen && setShowControls(false)}
     >
       <video
         ref={videoRef}
         src={src}
-        className="w-full h-auto"
+        className={`w-full ${isFullscreen ? 'h-full object-contain' : 'h-auto'}`}
         preload="metadata"
         onClick={togglePlay}
       >
@@ -199,11 +250,15 @@ export default function CustomVideoPlayer({ src, className = '' }: CustomVideoPl
       <button
         onClick={toggleFullscreen}
         className={`absolute bottom-4 right-4 p-2 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-sm transition-all ${
-          showControls ? 'opacity-100' : 'opacity-0'
+          showControls || isFullscreen ? 'opacity-100' : 'opacity-0'
         }`}
-        aria-label="Fullscreen"
+        aria-label={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
       >
-        <RiFullscreenFill className="w-4 h-4 text-white" />
+        {isFullscreen ? (
+          <RiFullscreenExitFill className="w-4 h-4 text-white" />
+        ) : (
+          <RiFullscreenFill className="w-4 h-4 text-white" />
+        )}
       </button>
     </div>
   );
