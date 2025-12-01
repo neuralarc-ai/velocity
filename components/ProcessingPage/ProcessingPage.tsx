@@ -11,13 +11,15 @@ import {
   RiVideoLine,
   RiCheckLine,
   RiLoader4Line,
+  RiCloseLine,
+  RiForbidLine,
 } from 'react-icons/ri';
 
 interface AnalysisStep {
   id: string;
   title: string;
   icon: React.ReactNode;
-  status: 'active' | 'completed' | 'pending';
+  status: 'active' | 'completed' | 'pending' | 'failed' | 'skipped';
 }
 
 interface ProcessingPageProps {
@@ -25,6 +27,8 @@ interface ProcessingPageProps {
   currentStepIndex: number;
   totalSteps: number;
   onComplete: () => void;
+  failedSteps?: string[]; // Array of step IDs that failed
+  generationBlocked?: boolean; // Whether generation was blocked
 }
 
 const ANALYSIS_STEPS: AnalysisStep[] = [
@@ -42,23 +46,53 @@ const ANALYSIS_STEPS: AnalysisStep[] = [
   { id: 'monetization-validation', title: 'Monetization Validation', icon: <RiMoneyDollarCircleLine className="w-5 h-5" />, status: 'pending' },
 ];
 
-export default function ProcessingPage({ prompt, currentStepIndex, totalSteps, onComplete }: ProcessingPageProps) {
+export default function ProcessingPage({ prompt, currentStepIndex, totalSteps, onComplete, failedSteps = [], generationBlocked = false }: ProcessingPageProps) {
   const [steps, setSteps] = useState<AnalysisStep[]>(ANALYSIS_STEPS);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Check if all steps are complete
-    const isComplete = currentStepIndex >= totalSteps - 1;
+    // Check if all steps are complete or if generation was blocked
+    const isComplete = currentStepIndex >= totalSteps - 1 || generationBlocked;
     
     // Update progress based on current step
     const displayStep = isComplete ? totalSteps : currentStepIndex + 1;
     const calculatedProgress = Math.min((displayStep / totalSteps) * 100, 100);
     setProgress(calculatedProgress);
 
+    // Map step IDs to indices
+    const stepIdToIndex: Record<string, number> = {
+      'prompt-receipt': 0,
+      'semantic-analysis': 1,
+      'safety-check': 2,
+      'content-retrieval': 3,
+      'initial-attribution': 4,
+      'prompt-augmentation': 5,
+      'video-generation': 6,
+      'output-analysis': 7,
+      'final-attribution': 8,
+      'contamination-detection': 9,
+      'post-safety-check': 10,
+      'monetization-validation': 11,
+    };
+
     // Update step statuses
     setSteps((prevSteps) =>
       prevSteps.map((step, index) => {
-        if (isComplete) {
+        const stepId = step.id;
+        const isFailed = failedSteps.includes(stepId);
+        
+        // If generation was blocked, mark steps after prompt-augmentation as skipped
+        if (generationBlocked && index > 5) {
+          return { ...step, status: 'skipped' };
+        }
+        
+        if (isFailed) {
+          return { ...step, status: 'failed' };
+        } else if (isComplete) {
+          // Only mark as completed if not failed/skipped
+          if (generationBlocked && index > 5) {
+            return { ...step, status: 'skipped' };
+          }
           return { ...step, status: 'completed' };
         } else if (index < currentStepIndex) {
           return { ...step, status: 'completed' };
@@ -70,14 +104,14 @@ export default function ProcessingPage({ prompt, currentStepIndex, totalSteps, o
       })
     );
 
-    // Call onComplete when all steps are done
+    // Call onComplete when all steps are done or generation is blocked
     if (isComplete) {
       const timer = setTimeout(() => {
         onComplete();
-      }, 500);
+      }, generationBlocked ? 1000 : 500); // Give a bit more time to see the failure
       return () => clearTimeout(timer);
     }
-  }, [currentStepIndex, totalSteps, onComplete]);
+  }, [currentStepIndex, totalSteps, onComplete, failedSteps, generationBlocked]);
 
   return (
     <div className="min-h-screen bg-brand-cream relative overflow-hidden">
@@ -145,6 +179,8 @@ export default function ProcessingPage({ prompt, currentStepIndex, totalSteps, o
               const isActive = step.status === 'active';
               const isCompleted = step.status === 'completed';
               const isPending = step.status === 'pending';
+              const isFailed = step.status === 'failed';
+              const isSkipped = step.status === 'skipped';
 
               return (
                 <div
@@ -152,6 +188,10 @@ export default function ProcessingPage({ prompt, currentStepIndex, totalSteps, o
                   className={`group relative rounded-xl p-5 transition-all duration-300 ${
                     isActive
                       ? 'bg-brand-mint-green/50 border-2 border-brand-orange scale-105 shadow-md'
+                      : isFailed
+                      ? 'bg-red-50 border-2 border-red-300 opacity-75'
+                      : isSkipped
+                      ? 'bg-gray-100 border-2 border-gray-300 opacity-50'
                       : isCompleted
                       ? 'bg-white border border-brand-lime-green/50 hover:border-brand-mint-green'
                       : 'bg-brand-cream/30 border border-brand-mint-green/30 opacity-60'
@@ -165,6 +205,10 @@ export default function ProcessingPage({ prompt, currentStepIndex, totalSteps, o
                       className={`p-3 rounded-lg transition-all duration-300 ${
                         isActive
                           ? 'bg-brand-orange text-white'
+                          : isFailed
+                          ? 'bg-red-500 text-white'
+                          : isSkipped
+                          ? 'bg-gray-400 text-white'
                           : isCompleted
                           ? 'bg-brand-lime-green text-brand-dark-green'
                           : 'bg-brand-mint-green/50 text-gray-400'
@@ -172,6 +216,10 @@ export default function ProcessingPage({ prompt, currentStepIndex, totalSteps, o
                     >
                       {isActive ? (
                         <RiLoader4Line className="w-5 h-5 animate-spin" />
+                      ) : isFailed ? (
+                        <RiCloseLine className="w-5 h-5" />
+                      ) : isSkipped ? (
+                        <RiForbidLine className="w-5 h-5" />
                       ) : isCompleted ? (
                         <RiCheckLine className="w-5 h-5" />
                       ) : (
@@ -183,6 +231,10 @@ export default function ProcessingPage({ prompt, currentStepIndex, totalSteps, o
                         className={`font-semibold mb-1 transition-colors ${
                           isActive
                             ? 'text-brand-orange'
+                            : isFailed
+                            ? 'text-red-600 line-through'
+                            : isSkipped
+                            ? 'text-gray-500 line-through'
                             : isCompleted
                             ? 'text-brand-dark-green'
                             : 'text-gray-500'
@@ -192,6 +244,12 @@ export default function ProcessingPage({ prompt, currentStepIndex, totalSteps, o
                       </h3>
                       {isActive && (
                         <p className="text-xs text-brand-orange mt-1 animate-pulse">Processing...</p>
+                      )}
+                      {isFailed && (
+                        <p className="text-xs text-red-600 mt-1">Failed</p>
+                      )}
+                      {isSkipped && (
+                        <p className="text-xs text-gray-500 mt-1">Skipped</p>
                       )}
                     </div>
                   </div>

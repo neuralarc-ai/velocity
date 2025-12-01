@@ -41,33 +41,33 @@ export default function LandingPage({ onStartAnalysis }: LandingPageProps) {
       </div>
 
       <div className="relative z-10 flex items-center justify-center min-h-screen px-4 py-12">
-        <div className="w-full max-w-5xl">
+        <div className="w-full max-w-4xl">
           {/* Header */}
-          <div className="text-center mb-16 animate-fade-in">
+          <div className="text-center mb-12 animate-fade-in">
             <h1 className="text-6xl md:text-7xl font-bold text-brand-dark-green mb-6 leading-tight">
               Velocity
             </h1>
             <p className="text-2xl md:text-3xl text-gray-600 mb-4 font-light">
               Protect Your AI-Generated Content
             </p>
-            <p className="text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg text-gray-500 max-w-4xl mx-auto leading-relaxed">
               Comprehensive IP tracking, safety validation, and monetization verification for your creative content
             </p>
           </div>
 
           {/* Main Input Card */}
           <div className="mb-12 animate-fade-in-up">
-            <div className={`relative bg-white rounded-2xl p-8 md:p-10 shadow-lg border border-gray-200 transition-all duration-300 ${
+            <div className={`relative bg-white rounded-2xl p-5 md:p-6 shadow-lg border border-gray-200 transition-all duration-300 ${
               isFocused ? 'ring-4 ring-blue-500/20 border-blue-500 scale-[1.01]' : 'hover:shadow-xl'
             }`}>
-              <div className="mb-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2.5 bg-brand-orange rounded-lg">
-                    <RiLightbulbFlashLine className="w-5 h-5 text-white" />
+              <div className="mb-4">
+                <div className="flex items-center gap-2.5 mb-3">
+                  <div className="p-2 bg-brand-orange rounded-lg">
+                    <RiLightbulbFlashLine className="w-4 h-4 text-white" />
                   </div>
-                  <h2 className="text-xl font-semibold text-gray-900">Describe Your Content</h2>
+                  <h3 className="text-lg font-semibold text-gray-900">Describe Your Content</h3>
                 </div>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-sm text-gray-600 leading-relaxed">
                   Enter your creative prompt for video generation. Velocity will analyze IP attribution, perform comprehensive safety checks, and validate content for monetization.
                 </p>
               </div>
@@ -80,21 +80,15 @@ export default function LandingPage({ onStartAnalysis }: LandingPageProps) {
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
                   placeholder="Enter your prompt here..."
-                  className="w-full px-6 py-4 border-2 border-brand-mint-green/30 rounded-xl focus:ring-4 focus:ring-brand-orange/20 focus:border-brand-orange resize-none bg-white text-gray-900 placeholder-gray-400 transition-all duration-300 text-lg leading-relaxed"
-                  rows={6}
+                  className="w-full px-4 py-3 border-2 border-brand-mint-green/30 rounded-xl focus:ring-4 focus:ring-brand-orange/20 focus:border-brand-orange resize-none bg-white text-gray-900 placeholder-gray-400 transition-all duration-300 text-base leading-relaxed"
+                  rows={4}
                 />
-                <div className="absolute bottom-4 right-4 flex items-center gap-2 text-xs text-gray-400">
-                  <kbd className="px-2 py-1 bg-gray-100 rounded border border-gray-300">⌘</kbd>
-                  <span>+</span>
-                  <kbd className="px-2 py-1 bg-gray-100 rounded border border-gray-300">Enter</kbd>
-                  <span>to submit</span>
-                </div>
               </div>
             </div>
           </div>
 
           {/* Example Prompts */}
-          <div className="mb-12 animate-fade-in-up delay-200">
+          <div className="mb-8 animate-fade-in-up delay-200">
             <div className="text-center mb-6">
               <h3 className="text-lg font-semibold text-gray-700 mb-2 flex items-center justify-center gap-2">
                 <RiSearchLine className="w-5 h-5 text-gray-500" />
@@ -133,31 +127,6 @@ export default function LandingPage({ onStartAnalysis }: LandingPageProps) {
               <span className="relative z-10">Start IP Analysis</span>
               <RiArrowRightLine className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
             </button>
-          </div>
-
-          {/* Feature Highlights */}
-          <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in-up delay-400">
-            <div className="p-6 bg-white/90 backdrop-blur-sm rounded-xl border border-brand-mint-green/30 hover:shadow-lg transition-all duration-300">
-              <div className="p-3 bg-brand-mint-green/50 rounded-lg w-fit mb-4">
-                <RiBarChartLine className="w-6 h-6 text-brand-orange" />
-              </div>
-              <h3 className="font-semibold text-gray-900 mb-2">IP Attribution</h3>
-              <p className="text-sm text-gray-600">Comprehensive tracking and analysis of intellectual property elements</p>
-            </div>
-            <div className="p-6 bg-white/90 backdrop-blur-sm rounded-xl border border-brand-lime-green/30 hover:shadow-lg transition-all duration-300">
-              <div className="p-3 bg-brand-lime-green/50 rounded-lg w-fit mb-4">
-                <RiShieldCheckLine className="w-6 h-6 text-brand-dark-green" />
-              </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Safety Checks</h3>
-              <p className="text-sm text-gray-600">Automated validation against safety rules and compliance standards</p>
-            </div>
-            <div className="p-6 bg-white/90 backdrop-blur-sm rounded-xl border border-brand-mint-green/30 hover:shadow-lg transition-all duration-300">
-              <div className="p-3 bg-brand-dark-green rounded-lg w-fit mb-4">
-                <RiShieldStarLine className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Monetization Ready</h3>
-              <p className="text-sm text-gray-600">Validate content for safe monetization and distribution</p>
-            </div>
           </div>
         </div>
       </div>

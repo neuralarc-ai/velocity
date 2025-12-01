@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 
 import { PipelineResult } from '@/lib/models';
 import { VideoExample } from '@/lib/examples';
+import { formatPercentage, formatPercentageValue } from '@/lib/utils';
 import ProcessTrace from '@/components/ProcessTrace/ProcessTrace';
 import ProcessTraceHorizontal from '@/components/ProcessTrace/ProcessTraceHorizontal';
 import MetricCard from '@/components/Metrics/MetricCard';
@@ -38,7 +39,7 @@ import {
 interface ProcessStep {
   id: number;
   title: string;
-  status: 'Complete' | 'Passed' | 'Approved' | 'Running' | 'Pending';
+  status: 'Complete' | 'Passed' | 'Approved' | 'Running' | 'Pending' | 'Failed' | 'Blocked' | 'Skipped';
   description: string;
   details?: string[];
 }
@@ -384,7 +385,8 @@ export default function ResultsPage({
               <div className="grid grid-cols-1 md:grid-cols-[4.2fr_1.2fr] gap-8">
                 {/* Left side - Video */}
                 <div className="w-full">
-                  {matchedExampleData?.results?.generated_video?.video_path ? (
+                  {matchedExampleData?.results?.generated_video?.video_path && 
+                   matchedExampleData.results.generated_video.video_path.trim() !== '' ? (
                     <div className="border-2 border-gray-200 rounded-xl overflow-hidden bg-gray-50 shadow-lg hover:shadow-xl transition-all duration-300">
                       <CustomVideoPlayer
                         src={matchedExampleData.results.generated_video.video_path}
@@ -399,9 +401,29 @@ export default function ResultsPage({
                       />
                     </div>
                   ) : (
-                    <div className="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center bg-gray-50">
-                      <RiVideoLine className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-600">Generated video will appear here</p>
+                    <div className="border-2 border-dashed border-red-300 rounded-xl overflow-hidden bg-red-50 shadow-lg relative" style={{ aspectRatio: '16/9' }}>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-center">
+                        <RiAlertLine className="w-16 h-16 text-red-400 mb-4" />
+                        <h3 className="text-lg font-semibold text-red-900 mb-2">Video Generation Blocked</h3>
+                        <p className="text-red-700 mb-4">
+                          {(() => {
+                            const preSafety = matchedExampleData?.results?.pre_gen_safety;
+                            const postSafety = matchedExampleData?.results?.post_gen_safety;
+                            if (preSafety && !preSafety.passed) {
+                              return preSafety.details?.generation_blocked_reason as string || 
+                                     'Video generation was blocked due to IP conflicts detected during pre-generation safety check.';
+                            }
+                            if (postSafety && !postSafety.passed) {
+                              return postSafety.details?.blocking_reason as string || 
+                                     'Video generation was blocked due to safety violations.';
+                            }
+                            return 'Video generation was blocked. See analysis below for details.';
+                          })()}
+                        </p>
+                        <p className="text-sm text-red-600">
+                          Analysis results are available below, but no video was generated.
+                        </p>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -412,13 +434,33 @@ export default function ResultsPage({
                   <div className="space-y-3">
                     <div className="p-4 bg-brand-cream/30 rounded-lg border border-brand-mint-green/20 hover:border-brand-orange hover:shadow-sm transition-all duration-300">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-brand-dark-green rounded-lg">
-                          <RiCheckboxCircleLine className="w-4 h-4 text-white" />
+                        <div className={`p-2 rounded-lg ${
+                          matchedExampleData?.results?.generated_video?.video_path && 
+                          matchedExampleData.results.generated_video.video_path.trim() !== ''
+                            ? 'bg-brand-dark-green'
+                            : 'bg-red-500'
+                        }`}>
+                          {matchedExampleData?.results?.generated_video?.video_path && 
+                           matchedExampleData.results.generated_video.video_path.trim() !== '' ? (
+                            <RiCheckboxCircleLine className="w-4 h-4 text-white" />
+                          ) : (
+                            <RiAlertLine className="w-4 h-4 text-white" />
+                          )}
                         </div>
                         <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">Status</span>
                       </div>
                       <div className="pl-11">
-                        <span className="text-base font-semibold text-gray-900">Generation complete</span>
+                        <span className={`text-base font-semibold ${
+                          matchedExampleData?.results?.generated_video?.video_path && 
+                          matchedExampleData.results.generated_video.video_path.trim() !== ''
+                            ? 'text-gray-900'
+                            : 'text-red-600'
+                        }`}>
+                          {matchedExampleData?.results?.generated_video?.video_path && 
+                           matchedExampleData.results.generated_video.video_path.trim() !== ''
+                            ? 'Generation complete'
+                            : 'Generation blocked'}
+                        </span>
                       </div>
                     </div>
                     
@@ -445,7 +487,10 @@ export default function ResultsPage({
                       </div>
                       <div className="pl-11">
                         <span className="text-base font-semibold text-gray-900">
-                          {videoResolution || 'Loading...'}
+                          {matchedExampleData?.results?.generated_video?.video_path && 
+                           matchedExampleData.results.generated_video.video_path.trim() !== ''
+                            ? (videoResolution || 'Loading...')
+                            : 'N/A'}
                         </span>
                       </div>
                     </div>
@@ -459,9 +504,10 @@ export default function ResultsPage({
                       </div>
                       <div className="pl-11">
                         <span className="text-base font-semibold text-gray-900">
-                          {videoDuration !== null
-                            ? `${Math.round(videoDuration)}s`
-                            : 'Loading...'}
+                          {matchedExampleData?.results?.generated_video?.video_path && 
+                           matchedExampleData.results.generated_video.video_path.trim() !== ''
+                            ? (videoDuration !== null ? `${Math.round(videoDuration)}s` : 'Loading...')
+                            : 'N/A'}
                         </span>
                       </div>
                     </div>
@@ -504,7 +550,7 @@ export default function ResultsPage({
                 <MetricCard
                   title="Contamination"
                   value={result.results?.post_gen_safety?.contamination_score !== undefined
-                    ? `${(result.results.post_gen_safety.contamination_score * 100).toFixed(1)}%`
+                    ? `${formatPercentage(result.results.post_gen_safety.contamination_score)}%`
                     : 'N/A'}
                   description="Model influence detected"
                   icon={<RiAlertLine className="w-6 h-6" />}
@@ -620,11 +666,11 @@ export default function ResultsPage({
         );
       })(),
     },
-    {
-      id: 'execution-logs',
-      label: 'Execution Logs',
-      content: <ProcessTrace steps={processSteps} />,
-    },
+    // {
+    //   id: 'execution-logs',
+    //   label: 'Execution Logs',
+    //   content: <ProcessTrace steps={processSteps} />,
+    // },
     {
       id: 'questions',
       label: 'Questions',
@@ -643,8 +689,8 @@ export default function ResultsPage({
         // Check both result and matchedExampleData for attribution data
         return (result.results?.initial_attribution && result.results?.final_attribution) ||
                (matchedExampleData?.results?.initial_attribution && matchedExampleData?.results?.final_attribution);
-      case 'execution-logs':
-        return processSteps && processSteps.length > 0;
+      // case 'execution-logs':
+      //   return processSteps && processSteps.length > 0;
       case 'questions':
         return true; // Always show questions tab
       default:

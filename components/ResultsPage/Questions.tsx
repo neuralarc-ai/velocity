@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { PipelineResult } from '@/lib/models';
 import { VideoExample } from '@/lib/examples';
+import { formatPercentage, formatNumber } from '@/lib/utils';
 import {
   RiQuestionLine,
   RiArrowDownSLine,
@@ -85,7 +86,7 @@ export default function Questions({ result, matchedExampleData, prompt }: Questi
 
   // Calculate key metrics
   const contaminationScore = postGenSafety?.contamination_score ?? 0;
-  const contaminationPercent = (contaminationScore * 100).toFixed(1);
+  const contaminationPercent = formatPercentage(contaminationScore);
   const passed = postGenSafety?.passed ?? false;
   const monetizationVerdict = finalAttribution?.details?.monetization_verdict as string | undefined;
   const totalScore = finalAttribution?.total_score ?? initialAttribution?.total_score ?? 0;
@@ -109,7 +110,7 @@ export default function Questions({ result, matchedExampleData, prompt }: Questi
   // Helper function to generate answers
   const getAnswer1 = (): string => {
     if (isApproved) {
-      return `Yes, your content is approved for monetization. The analysis shows:\n\n• Safety checks: PASSED\n• Contamination score: ${contaminationPercent}% (below 5% threshold)\n• IP attribution: ${(totalScore * 100).toFixed(0)}% confidence\n• No copyright violations detected\n\nYour content meets all platform requirements and is ready for monetization with proper IP tracking in place.`;
+      return `Yes, your content is approved for monetization. The analysis shows:\n\n• Safety checks: PASSED\n• Contamination score: ${contaminationPercent}% (below 5% threshold)\n• IP attribution: ${formatPercentage(totalScore)}% confidence\n• No copyright violations detected\n\nYour content meets all platform requirements and is ready for monetization with proper IP tracking in place.`;
     }
     if (isBlocked) {
       return `No, your content is blocked from monetization. The analysis indicates:\n\n• Contamination score: ${contaminationPercent}% (exceeds safe threshold)\n• Copyright risk: HIGH\n• Monetization verdict: ${monetizationVerdict || 'BLOCKED'}\n\nYour content contains unlicensed copyrighted material that prevents monetization. You should:\n\n1. Remove or replace copyrighted elements\n2. Obtain proper licenses for any IP used\n3. Create original content without copyrighted material\n\nSee the Monetization Status tab for detailed risk analysis.`;
@@ -120,7 +121,7 @@ export default function Questions({ result, matchedExampleData, prompt }: Questi
   const getAnswer2 = (): string => {
     if (retrievedIps && retrievedIps.length > 0) {
       const ipList = retrievedIps.map((ip, index) => 
-        `${index + 1}. ${ip.name || ip.owner}\n   • Owner: ${ip.owner}\n   • Type: ${ip.type.replace(/_/g, ' ')}\n   • Relevance: ${(ip.relevance_score * 100).toFixed(0)}%\n`
+        `${index + 1}. ${ip.name || ip.owner}\n   • Owner: ${ip.owner}\n   • Type: ${ip.type.replace(/_/g, ' ')}\n   • Relevance: ${formatPercentage(ip.relevance_score)}%\n`
       ).join('\n');
       const mandatoryActions = finalAttribution?.details?.mandatory_actions || '1. Ensure proper attribution to all IP owners in your video description\n2. Include appropriate disclaimers if using trademarked elements\n3. Verify you have proper licensing or are within fair use guidelines\n4. Content is cleared for monetization with proper IP tracking';
       return `The following intellectual property has been detected in your content:\n\n${ipList}\n\nImportant Actions Required:\n\n${mandatoryActions}\n\nSee the Attribution Details tab for comprehensive IP analysis.`;
@@ -167,7 +168,7 @@ export default function Questions({ result, matchedExampleData, prompt }: Questi
       : '• No specific objects detected';
     const analysisDetails = videoAnalysis?.analysis || 'Video analysis completed successfully. See Content Analysis tab for comprehensive details.';
     const metrics = videoMetrics
-      ? `• Frames analyzed: ${videoMetrics.frames_analyzed}\n• Embedding matches: ${videoMetrics.embedding_matches}\n• Analysis confidence: ${confidence > 0 ? (confidence * 100).toFixed(0) + '%' : 'N/A'}`
+      ? `• Frames analyzed: ${videoMetrics.frames_analyzed}\n• Embedding matches: ${videoMetrics.embedding_matches}\n• Analysis confidence: ${confidence > 0 ? formatPercentage(confidence) + '%' : 'N/A'}`
       : '• Video metrics not available';
     return `The video analysis detected the following elements:\n\nDetected Brands:\n\n${brandsList}\n\nDetected Objects:\n\n${objectsList}\n\nAnalysis Details:\n\n${analysisDetails}\n\nVideo Metrics:\n\n${metrics}\n\nWhat This Means:\n\nThese detections help identify potential IP concerns and ensure proper attribution. If brands or copyrighted objects are detected, ensure you have proper rights or are within fair use guidelines.`;
   };
@@ -179,14 +180,14 @@ export default function Questions({ result, matchedExampleData, prompt }: Questi
       : confidence >= 0.7
       ? 'MODERATE CONFIDENCE - The attribution results are reasonably reliable but may require manual verification for critical decisions.'
       : 'LOW CONFIDENCE - The attribution results should be verified manually. Some detected IP may be false positives.';
-    const visualMatch = finalAttribution?.details?.visual_match ? (Number(finalAttribution.details.visual_match) * 100).toFixed(0) + '%' : 'N/A';
-    const audioMatch = finalAttribution?.details?.audio_match ? (Number(finalAttribution.details.audio_match) * 100).toFixed(0) + '%' : 'N/A';
-    const temporalMatch = finalAttribution?.details?.temporal_match ? (Number(finalAttribution.details.temporal_match) * 100).toFixed(0) + '%' : 'N/A';
-    const variance = finalAttribution?.variance_from_initial !== undefined ? (finalAttribution.variance_from_initial * 100).toFixed(1) + '%' : 'N/A';
+    const visualMatch = finalAttribution?.details?.visual_match ? formatPercentage(Number(finalAttribution.details.visual_match)) + '%' : 'N/A';
+    const audioMatch = finalAttribution?.details?.audio_match ? formatPercentage(Number(finalAttribution.details.audio_match)) + '%' : 'N/A';
+    const temporalMatch = finalAttribution?.details?.temporal_match ? formatPercentage(Number(finalAttribution.details.temporal_match)) + '%' : 'N/A';
+    const variance = finalAttribution?.variance_from_initial !== undefined ? formatPercentage(finalAttribution.variance_from_initial) + '%' : 'N/A';
     const recommendation = confidence >= 0.9
       ? 'You can proceed with confidence in the attribution results.'
       : 'Review the Attribution Details tab and verify critical IP matches manually.';
-    return `The IP attribution analysis has a confidence score of ${(confidence * 100).toFixed(0)}%.\n\nAttribution Confidence Breakdown:\n\n• Total Score: ${(totalScore * 100).toFixed(0)}%\n• Confidence Level: ${(confidence * 100).toFixed(0)}%\n• Algorithm Used: ${algorithm}\n\nConfidence Interpretation:\n\n${confidenceText}\n\nFactors Affecting Accuracy:\n\n• Visual match quality: ${visualMatch}\n• Audio match quality: ${audioMatch}\n• Temporal match quality: ${temporalMatch}\n• Variance from initial: ${variance}\n\nRecommendation:\n\n${recommendation}`;
+    return `The IP attribution analysis has a confidence score of ${formatPercentage(confidence)}%.\n\nAttribution Confidence Breakdown:\n\n• Total Score: ${formatPercentage(totalScore)}%\n• Confidence Level: ${formatPercentage(confidence)}%\n• Algorithm Used: ${algorithm}\n\nConfidence Interpretation:\n\n${confidenceText}\n\nFactors Affecting Accuracy:\n\n• Visual match quality: ${visualMatch}\n• Audio match quality: ${audioMatch}\n• Temporal match quality: ${temporalMatch}\n• Variance from initial: ${variance}\n\nRecommendation:\n\n${recommendation}`;
   };
 
   const getAnswer8 = (): string => {
@@ -219,7 +220,7 @@ export default function Questions({ result, matchedExampleData, prompt }: Questi
       : hasMonetizationRisk
       ? 'HIGH RISK - Your content may face restrictions or removal on some platforms. Address IP concerns before cross-posting.'
       : 'MODERATE RISK - Review platform policies and ensure proper attribution before posting.';
-    return `Platform eligibility depends on your content's compliance status:\n\nCurrent Status:\n\n• Safety checks: ${passed ? '✅ PASSED' : '❌ FAILED'}\n• Contamination score: ${contaminationPercent}%\n• Monetization status: ${isApproved ? 'APPROVED' : isBlocked ? 'BLOCKED' : 'REVIEW REQUIRED'}\n• IP attribution: ${(totalScore * 100).toFixed(0)}% confidence\n\nPlatform-Specific Considerations:\n\nYouTube:\n${youtubeStatus}\n\nTikTok:\n${tiktokStatus}\n\nInstagram/Facebook:\n${instagramStatus}\n\nTwitter/X:\n${twitterStatus}\n\nGeneral Guidelines:\n\n• Always include proper attribution\n• Review platform-specific IP policies\n• Monitor for copyright claims\n• Be prepared to respond to takedown notices\n• Consider platform age restrictions\n\nRisk Assessment:\n\n${riskAssessment}\n\nRecommendation:\n\nStart with platforms that have more lenient IP policies, then expand based on performance and feedback.`;
+    return `Platform eligibility depends on your content's compliance status:\n\nCurrent Status:\n\n• Safety checks: ${passed ? '✅ PASSED' : '❌ FAILED'}\n• Contamination score: ${contaminationPercent}%\n• Monetization status: ${isApproved ? 'APPROVED' : isBlocked ? 'BLOCKED' : 'REVIEW REQUIRED'}\n• IP attribution: ${formatPercentage(totalScore)}% confidence\n\nPlatform-Specific Considerations:\n\nYouTube:\n${youtubeStatus}\n\nTikTok:\n${tiktokStatus}\n\nInstagram/Facebook:\n${instagramStatus}\n\nTwitter/X:\n${twitterStatus}\n\nGeneral Guidelines:\n\n• Always include proper attribution\n• Review platform-specific IP policies\n• Monitor for copyright claims\n• Be prepared to respond to takedown notices\n• Consider platform age restrictions\n\nRisk Assessment:\n\n${riskAssessment}\n\nRecommendation:\n\nStart with platforms that have more lenient IP policies, then expand based on performance and feedback.`;
   };
 
   const getAnswer10 = (): string => {

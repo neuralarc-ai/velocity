@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { RiTimeLine } from 'react-icons/ri';
+import { formatPercentageValue } from '@/lib/utils';
 
 interface DonutChartData {
   label: string;
@@ -149,7 +150,7 @@ export default function DonutChart({
             {hoveredIndex !== null && (
               <div className="text-center">
                 <div className="text-2xl font-bold text-gray-900">
-                  {segments[hoveredIndex].value.toFixed(1)}%
+                  {formatPercentageValue(segments[hoveredIndex].value)}%
                 </div>
               </div>
             )}

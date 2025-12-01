@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { RiTimeLine, RiCheckboxCircleLine, RiLoader4Line } from 'react-icons/ri';
+import { RiTimeLine, RiCheckboxCircleLine, RiLoader4Line, RiCloseLine, RiForbidLine } from 'react-icons/ri';
 
 interface ProcessStep {
   id: number;
   title: string;
-  status: 'Complete' | 'Passed' | 'Approved' | 'Running' | 'Pending';
+  status: 'Complete' | 'Passed' | 'Approved' | 'Running' | 'Pending' | 'Failed' | 'Blocked' | 'Skipped';
   description: string;
   details?: string[];
   icon?: React.ReactNode;
@@ -29,6 +29,14 @@ export default function ProcessTraceHorizontal({ steps, currentStep }: ProcessTr
 
   const isStepRunning = (status: string) => {
     return status === 'Running';
+  };
+
+  const isStepFailed = (status: string) => {
+    return status === 'Failed' || status === 'Blocked';
+  };
+
+  const isStepSkipped = (status: string) => {
+    return status === 'Skipped';
   };
 
   // Auto-scroll to current step horizontally
@@ -79,6 +87,24 @@ export default function ProcessTraceHorizontal({ steps, currentStep }: ProcessTr
         return (
           <span className="px-2 py-1 rounded-full text-xs font-medium bg-brand-cream/50 text-gray-600 border border-brand-mint-green/30">
             {status}
+          </span>
+        );
+      case 'Failed':
+        return (
+          <span className="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 border border-red-300">
+            Failed
+          </span>
+        );
+      case 'Blocked':
+        return (
+          <span className="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 border border-red-300">
+            Blocked
+          </span>
+        );
+      case 'Skipped':
+        return (
+          <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-500 border border-gray-300">
+            Skipped
           </span>
         );
       default:
@@ -143,6 +169,8 @@ export default function ProcessTraceHorizontal({ steps, currentStep }: ProcessTr
           {steps.map((step, index) => {
             const isCompleted = isStepCompleted(step.status);
             const isRunning = isStepRunning(step.status);
+            const isFailed = isStepFailed(step.status);
+            const isSkipped = isStepSkipped(step.status);
             const isActive = currentStep === step.id;
 
             return (
@@ -156,6 +184,10 @@ export default function ProcessTraceHorizontal({ steps, currentStep }: ProcessTr
                   className={`bg-white rounded-xl border-2 p-4 shadow-md transition-all duration-300 h-full flex flex-col ${
                     isRunning
                       ? 'border-brand-orange bg-brand-mint-green/30'
+                      : isFailed
+                      ? 'border-red-300 bg-red-50/50'
+                      : isSkipped
+                      ? 'border-gray-400 bg-gray-100/80 opacity-75'
                       : isCompleted
                       ? 'border-brand-lime-green bg-brand-lime-green/20'
                       : 'border-brand-mint-green/20 bg-white'
@@ -174,7 +206,11 @@ export default function ProcessTraceHorizontal({ steps, currentStep }: ProcessTr
                   </div>
 
                   {/* Description */}
-                  <p className="text-xs text-gray-600 leading-relaxed mb-4 flex-1">{step.description}</p>
+                  <p className={`text-xs leading-relaxed mb-4 flex-1 ${
+                    isFailed ? 'text-red-600' : 
+                    isSkipped ? 'text-gray-600 italic' : 
+                    'text-gray-600'
+                  }`}>{step.description}</p>
 
                   {/* Timeline Indicator */}
                   <div className="flex items-center justify-center mt-auto">
@@ -182,6 +218,10 @@ export default function ProcessTraceHorizontal({ steps, currentStep }: ProcessTr
                       className={`w-10 h-10 rounded-full border-2 border-white flex items-center justify-center transition-all duration-300 ${
                         isCompleted
                           ? 'bg-brand-dark-green shadow-lg'
+                          : isFailed
+                          ? 'bg-red-500 shadow-lg shadow-red-500/50'
+                          : isSkipped
+                          ? 'bg-gray-400 shadow-lg shadow-gray-400/50'
                           : isRunning
                           ? 'bg-brand-orange shadow-lg animate-pulse'
                           : 'bg-brand-mint-green/50'
@@ -190,10 +230,16 @@ export default function ProcessTraceHorizontal({ steps, currentStep }: ProcessTr
                       {isCompleted && (
                         <RiCheckboxCircleLine className="w-6 h-6 text-white" />
                       )}
+                      {isFailed && (
+                        <RiCloseLine className="w-6 h-6 text-white" />
+                      )}
+                      {isSkipped && (
+                        <RiForbidLine className="w-6 h-6 text-white" />
+                      )}
                       {isRunning && (
                         <RiLoader4Line className="w-6 h-6 text-white animate-spin" />
                       )}
-                      {!isCompleted && !isRunning && (
+                      {!isCompleted && !isFailed && !isSkipped && !isRunning && (
                         <div className="w-3 h-3 rounded-full bg-white" />
                       )}
                     </div>

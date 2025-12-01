@@ -74,15 +74,20 @@ export class StrandPipeline {
       results['pre_gen_safety'] = matchedExample.results.pre_gen_safety;
       await this.logStep('pre_generation_safety', 100);
 
-      // Check if safety passed
+      // Check if safety passed - if not, mark video generation as failed but continue analysis
       const preSafety = results['pre_gen_safety'] as SafetyResult;
+      let generationBlocked = false;
       if (!preSafety.passed) {
         this.logger.logStepError(
           'pre_generation_safety',
           new Error('Safety check failed'),
           { violations: preSafety.violations }
         );
-        return this.createFailureResult('Pre-generation safety check failed', results);
+        generationBlocked = true;
+        // Mark this step as failed but continue
+        if (this.state) {
+          this.state.failed_steps.push('pre_generation_safety');
+        }
       }
 
       // Step 5: Prompt Augmentation (use example data)
@@ -91,30 +96,60 @@ export class StrandPipeline {
 
       // Step 6: Video Generation (use example data)
       results['generated_video'] = matchedExample.results.generated_video;
-      await this.logStep('video_generation', 1000);
-
-      // Step 7: Post-Generation Safety Check (use example data)
-      results['post_gen_safety'] = matchedExample.results.post_gen_safety;
-      await this.logStep('post_generation_safety', 150);
-
-      // Check if safety passed
-      const postSafety = results['post_gen_safety'] as SafetyResult;
-      if (!postSafety.passed) {
+      if (generationBlocked) {
+        // Mark video generation as failed
         this.logger.logStepError(
-          'post_generation_safety',
-          new Error('Safety check failed'),
-          { violations: postSafety.violations }
+          'video_generation',
+          new Error('Video generation blocked due to pre-generation safety check failure'),
+          { reason: 'IP conflict detected' }
         );
-        return this.createFailureResult('Post-generation safety check failed', results);
+        if (this.state) {
+          this.state.failed_steps.push('video_generation');
+          this.updateState('video_generation', 0, 'failed');
+          // Mark all subsequent steps as skipped
+          const subsequentSteps = [
+            'post_generation_safety',
+            'final_attribution',
+            'video_analysis',
+          ];
+          subsequentSteps.forEach(step => {
+            this.state!.failed_steps.push(step);
+            this.updateState(step, 0, 'failed');
+          });
+        }
+        await delay(100); // Short delay to show failure
+        // Skip remaining steps when generation fails - still populate results for display
+        results['post_gen_safety'] = matchedExample.results.post_gen_safety;
+        results['final_attribution'] = matchedExample.results.final_attribution;
+        results['video_analysis'] = matchedExample.results.video_analysis;
+      } else {
+        await this.logStep('video_generation', 1000);
+
+        // Step 7: Post-Generation Safety Check (use example data)
+        results['post_gen_safety'] = matchedExample.results.post_gen_safety;
+        await this.logStep('post_generation_safety', 150);
+
+        // Check if safety passed - log error but continue to show analysis
+        const postSafety = results['post_gen_safety'] as SafetyResult;
+        if (!postSafety.passed) {
+          this.logger.logStepError(
+            'post_generation_safety',
+            new Error('Safety check failed'),
+            { violations: postSafety.violations }
+          );
+          if (this.state) {
+            this.state.failed_steps.push('post_generation_safety');
+          }
+        }
+
+        // Step 8: Final Attribution (use example data)
+        results['final_attribution'] = matchedExample.results.final_attribution;
+        await this.logStep('final_attribution', 400);
+
+        // Step 9: Video Analysis (use example data)
+        results['video_analysis'] = matchedExample.results.video_analysis;
+        await this.logStep('video_analysis', 250);
       }
-
-      // Step 8: Final Attribution (use example data)
-      results['final_attribution'] = matchedExample.results.final_attribution;
-      await this.logStep('final_attribution', 400);
-
-      // Step 9: Video Analysis (use example data)
-      results['video_analysis'] = matchedExample.results.video_analysis;
-      await this.logStep('video_analysis', 250);
 
       // Step 10: Logging and Display
       const finalResult = await this.step10LoggingAndDisplay(results);
@@ -124,6 +159,15 @@ export class StrandPipeline {
       if (this.state) {
         this.state.total_duration_ms = totalDuration;
         this.state.completed_at = new Date().toISOString();
+      }
+
+      // Determine final status - if generation was blocked, mark as failed but include all results
+      const hasFailures = generationBlocked || (this.state?.failed_steps.length ?? 0) > 0;
+      if (hasFailures) {
+        finalResult.status = 'failed';
+        finalResult.error = generationBlocked 
+          ? 'Video generation blocked due to IP conflict. Analysis completed.'
+          : 'Some pipeline steps failed. Analysis completed.';
       }
 
       // Add matched example info to result
@@ -136,7 +180,7 @@ export class StrandPipeline {
 
       this.logger.logStepEnd('pipeline_execution', totalDuration, {
         execution_id: executionId,
-        status: 'success',
+        status: hasFailures ? 'failed' : 'success',
         example_id: matchedExample.id,
       });
 

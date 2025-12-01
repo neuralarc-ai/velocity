@@ -2,6 +2,7 @@
 
 import { PipelineResult } from '@/lib/models';
 import { RiCheckboxCircleLine, RiAlertLine } from 'react-icons/ri';
+import { formatPercentage } from '@/lib/utils';
 
 interface SafetyChecksProps {
   result: PipelineResult;
@@ -14,7 +15,7 @@ export default function SafetyChecks({ result }: SafetyChecksProps) {
     return <div>No safety check data available.</div>;
   }
 
-  const contaminationScore = (safetyData.contamination_score * 100).toFixed(2);
+  const contaminationScore = formatPercentage(safetyData.contamination_score);
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6">

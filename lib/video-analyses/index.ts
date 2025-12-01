@@ -12,8 +12,8 @@ import { VideoExample } from '../examples';
 import { spidermanDoomAnalysis } from './spiderman-doom';
 import { baahubaliBattleAnalysis } from './baahubali-battle';
 import { fordGt40Analysis } from './ford-gt40';
-import { mcdonaldsAnalysis } from './mcdonalds';
-import { samsungGalaxyAnalysis } from './samsung-galaxy';
+import { johnWickEthanHuntAnalysis } from './wick-hunt-crossover';
+import { totoroForestGuardianAnalysis } from './totoro-forest';
 
 /**
  * Array of all video analyses
@@ -23,8 +23,8 @@ export const VIDEO_ANALYSES: VideoExample[] = [
   spidermanDoomAnalysis,
   baahubaliBattleAnalysis,
   fordGt40Analysis,
-  mcdonaldsAnalysis,
-  samsungGalaxyAnalysis,
+  johnWickEthanHuntAnalysis,
+  totoroForestGuardianAnalysis,
 ];
 
 /**

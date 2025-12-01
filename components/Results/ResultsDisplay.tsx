@@ -2,6 +2,7 @@
 
 import { PipelineResult } from '@/lib/models';
 import { RiCheckboxCircleLine, RiErrorWarningLine, RiBarChartLine, RiShieldCheckLine, RiVideoLine, RiSearchLine } from 'react-icons/ri';
+import { formatPercentage } from '@/lib/utils';
 
 interface ResultsDisplayProps {
   result: PipelineResult;
@@ -148,13 +149,13 @@ export default function ResultsDisplay({ result }: ResultsDisplayProps) {
           <div className="flex justify-between items-center">
             <span className="text-sm text-gray-600">Total Score</span>
             <span className="text-lg font-semibold text-gray-900">
-              {(results.final_attribution.total_score * 100).toFixed(1)}%
+              {formatPercentage(results.final_attribution.total_score)}%
             </span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-sm text-gray-600">Confidence</span>
             <span className="text-lg font-semibold text-gray-900">
-              {(results.final_attribution.confidence * 100).toFixed(1)}%
+              {formatPercentage(results.final_attribution.confidence)}%
             </span>
           </div>
           {results.final_attribution.variance_from_initial !== undefined && (
@@ -168,7 +169,7 @@ export default function ResultsDisplay({ result }: ResultsDisplayProps) {
                       : 'text-yellow-600'
                   }`}
                 >
-                  {(results.final_attribution.variance_from_initial * 100).toFixed(2)}%
+                  {formatPercentage(results.final_attribution.variance_from_initial)}%
                 </span>
               </div>
             </div>

@@ -2,6 +2,7 @@
 
 import { PipelineResult } from '@/lib/models';
 import { RiBarChartLine } from 'react-icons/ri';
+import { formatPercentage } from '@/lib/utils';
 
 interface IpSourcesProps {
   result: PipelineResult;
@@ -31,7 +32,7 @@ export default function IpSources({ result }: IpSourcesProps) {
         'grid-cols-3'
       }`}>
         {entries.map(([source, value]) => {
-          const percentage = (Number(value) * 100).toFixed(2);
+          const percentage = formatPercentage(Number(value));
           return (
             <div key={source} className="bg-gray-50 rounded-lg p-4 text-center">
               <div className="text-3xl font-bold text-gray-900 mb-1">{percentage}%</div>

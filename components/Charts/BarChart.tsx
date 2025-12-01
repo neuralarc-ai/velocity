@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { RiBarChartLine } from 'react-icons/ri';
+import { formatPercentageValue } from '@/lib/utils';
 
 interface BarChartData {
   label: string;
@@ -88,7 +89,7 @@ export default function BarChart({
                   {isHovered && (
                     <div className="absolute px-3 py-2 bg-gray-900 text-white text-xs rounded-lg shadow-lg z-20 whitespace-nowrap" style={{ bottom: `calc(${heightPercent}% - 2px)`, left: '50%', transform: 'translateX(-50%) translateY(-100%)' }}>
                       <div className="font-semibold mb-1">{item.label}</div>
-                      <div className="text-gray-300">Attribution: {item.value.toFixed(1)}%</div>
+                      <div className="text-gray-300">Attribution: {formatPercentageValue(item.value)}%</div>
                       <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
                         <div className="w-2 h-2 bg-gray-900 rotate-45"></div>
                       </div>
@@ -147,7 +148,7 @@ export default function BarChart({
               <div>
                 <span className="text-gray-600">Highest: </span>
                 <span className="font-bold text-gray-900">
-                  {highestItem.label} ({highestItem.value.toFixed(1)}%)
+                  {highestItem.label} ({formatPercentageValue(highestItem.value)}%)
                 </span>
               </div>
             )}

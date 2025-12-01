@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { RiTimeLine, RiCheckboxCircleLine, RiLoader4Line, RiErrorWarningLine, RiFileTextLine, RiLightbulbLine, RiShieldCheckLine, RiDatabaseLine, RiBarChartLine, RiRefreshLine, RiVideoLine, RiEyeLine, RiAlertLine, RiMoneyDollarCircleLine } from 'react-icons/ri';
+import { RiTimeLine, RiCheckboxCircleLine, RiLoader4Line, RiErrorWarningLine, RiFileTextLine, RiLightbulbLine, RiShieldCheckLine, RiDatabaseLine, RiBarChartLine, RiRefreshLine, RiVideoLine, RiEyeLine, RiAlertLine, RiMoneyDollarCircleLine, RiCloseLine, RiForbidLine } from 'react-icons/ri';
 
 interface ProcessStep {
   id: number;
   title: string;
-  status: 'Complete' | 'Passed' | 'Approved' | 'Running' | 'Pending';
+  status: 'Complete' | 'Passed' | 'Approved' | 'Running' | 'Pending' | 'Failed' | 'Blocked' | 'Skipped';
   description: string;
   details?: string[];
   icon?: React.ReactNode;
@@ -27,6 +27,12 @@ export default function ProcessTrace({ steps, currentStep }: ProcessTraceProps) 
     
     if (status === 'Complete' || status === 'Passed' || status === 'Approved') {
       return <RiCheckboxCircleLine className={`${iconClass} text-brand-dark-green`} />;
+    }
+    if (status === 'Failed' || status === 'Blocked') {
+      return <RiCloseLine className={`${iconClass} text-red-500`} />;
+    }
+    if (status === 'Skipped') {
+      return <RiForbidLine className={`${iconClass} text-gray-400`} />;
     }
     if (status === 'Running') {
       return <RiLoader4Line className={`${iconClass} text-brand-orange animate-spin`} />;
@@ -73,6 +79,24 @@ export default function ProcessTrace({ steps, currentStep }: ProcessTraceProps) 
             Approved
           </span>
         );
+      case 'Failed':
+        return (
+          <span className={`${baseClasses} bg-red-100 text-red-700 border border-red-300`}>
+            Failed
+          </span>
+        );
+      case 'Blocked':
+        return (
+          <span className={`${baseClasses} bg-red-100 text-red-700 border border-red-300`}>
+            Blocked
+          </span>
+        );
+      case 'Skipped':
+        return (
+          <span className={`${baseClasses} bg-gray-100 text-gray-500 border border-gray-300`}>
+            Skipped
+          </span>
+        );
       case 'Running':
         return (
           <span className={`${baseClasses} bg-brand-mint-green/50 text-brand-orange border border-brand-orange animate-pulse`}>
@@ -98,6 +122,14 @@ export default function ProcessTrace({ steps, currentStep }: ProcessTraceProps) 
     return status === 'Complete' || status === 'Passed' || status === 'Approved';
   };
 
+  const isStepFailed = (status: string) => {
+    return status === 'Failed' || status === 'Blocked';
+  };
+
+  const isStepSkipped = (status: string) => {
+    return status === 'Skipped';
+  };
+
   const isStepRunning = (status: string) => {
     return status === 'Running';
   };
@@ -114,7 +146,13 @@ export default function ProcessTrace({ steps, currentStep }: ProcessTraceProps) 
           <div>
             <h3 className="text-lg font-bold text-gray-900">Process Trace</h3>
             <p className="text-xs text-gray-500 mt-0.5">
-              {steps.length > 0 ? `${steps.filter(s => isStepCompleted(s.status)).length} of ${steps.length} completed` : 'Real-time execution tracking'}
+              {steps.length > 0 ? (
+                <>
+                  {steps.filter(s => isStepCompleted(s.status)).length} completed
+                  {steps.filter(s => isStepFailed(s.status)).length > 0 && ` • ${steps.filter(s => isStepFailed(s.status)).length} failed`}
+                  {steps.filter(s => isStepSkipped(s.status)).length > 0 && ` • ${steps.filter(s => isStepSkipped(s.status)).length} skipped`}
+                </>
+              ) : 'Real-time execution tracking'}
             </p>
           </div>
         </div>
@@ -139,6 +177,8 @@ export default function ProcessTrace({ steps, currentStep }: ProcessTraceProps) 
             <div className="space-y-6">
               {steps.map((step, index) => {
                 const isCompleted = isStepCompleted(step.status);
+                const isFailed = isStepFailed(step.status);
+                const isSkipped = isStepSkipped(step.status);
                 const isRunning = isStepRunning(step.status);
                 const isActive = currentStep === step.id;
 
@@ -155,6 +195,10 @@ export default function ProcessTrace({ steps, currentStep }: ProcessTraceProps) 
                       className={`bg-white rounded-xl border-2 p-5 shadow-sm transition-all duration-300 ${
                         isRunning
                           ? 'border-brand-orange bg-brand-mint-green/30 shadow-md'
+                          : isFailed
+                          ? 'border-red-300 bg-red-50/50'
+                          : isSkipped
+                          ? 'border-gray-400 bg-gray-100/80 opacity-75'
                           : isCompleted
                           ? 'border-brand-lime-green bg-brand-lime-green/20'
                           : 'border-brand-mint-green/20 bg-white'
@@ -166,8 +210,16 @@ export default function ProcessTrace({ steps, currentStep }: ProcessTraceProps) 
                           {/* Step Info */}
                           <div className="flex-1 min-w-0">
                             <span className="text-xs font-bold text-gray-400 block mb-1">STEP {step.id}</span>
-                            <h4 className="text-base font-bold text-gray-900 mb-2">{step.title}</h4>
-                            <p className="text-sm text-gray-600 leading-relaxed">{step.description}</p>
+                            <h4 className={`text-base font-bold mb-2 ${
+                              isFailed ? 'text-red-700 line-through' : 
+                              isSkipped ? 'text-gray-600 line-through decoration-2' : 
+                              'text-gray-900'
+                            }`}>{step.title}</h4>
+                            <p className={`text-sm leading-relaxed ${
+                              isFailed ? 'text-red-600' : 
+                              isSkipped ? 'text-gray-600 italic' : 
+                              'text-gray-600'
+                            }`}>{step.description}</p>
                           </div>
                         </div>
 
@@ -179,12 +231,18 @@ export default function ProcessTrace({ steps, currentStep }: ProcessTraceProps) 
 
                       {/* Step Details */}
                       {step.details && step.details.length > 0 && (
-                        <div className="mt-4 pt-4 border-t border-gray-100">
+                        <div className={`mt-4 pt-4 border-t ${
+                          isSkipped ? 'border-gray-300' : 'border-gray-100'
+                        }`}>
                           <div className="space-y-2">
                             {step.details.map((detail, idx) => (
                               <div key={idx} className="flex items-start gap-2">
-                                <div className="w-1.5 h-1.5 rounded-full bg-gray-400 mt-1.5 flex-shrink-0" />
-                                <p className="text-xs text-gray-600 leading-relaxed">{detail}</p>
+                                <div className={`w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0 ${
+                                  isSkipped ? 'bg-gray-500' : 'bg-gray-400'
+                                }`} />
+                                <p className={`text-xs leading-relaxed ${
+                                  isSkipped ? 'text-gray-600 italic' : 'text-gray-600'
+                                }`}>{detail}</p>
                               </div>
                             ))}
                           </div>
@@ -197,6 +255,10 @@ export default function ProcessTrace({ steps, currentStep }: ProcessTraceProps) 
                       className={`absolute left-0 top-6 w-12 h-12 rounded-full border-4 border-white flex items-center justify-center transition-all duration-300 ${
                         isCompleted
                           ? 'bg-brand-dark-green shadow-lg shadow-brand-lime-green/50'
+                          : isFailed
+                          ? 'bg-red-500 shadow-lg shadow-red-500/50'
+                          : isSkipped
+                          ? 'bg-gray-400 shadow-lg shadow-gray-400/50'
                           : isRunning
                           ? 'bg-brand-orange shadow-lg shadow-brand-orange/50 animate-pulse'
                           : 'bg-brand-mint-green/50'
@@ -205,10 +267,16 @@ export default function ProcessTrace({ steps, currentStep }: ProcessTraceProps) 
                       {isCompleted && (
                         <RiCheckboxCircleLine className="w-6 h-6 text-white" />
                       )}
+                      {isFailed && (
+                        <RiCloseLine className="w-6 h-6 text-white" />
+                      )}
+                      {isSkipped && (
+                        <RiForbidLine className="w-6 h-6 text-white" />
+                      )}
                       {isRunning && (
                         <RiLoader4Line className="w-6 h-6 text-white animate-spin" />
                       )}
-                      {!isCompleted && !isRunning && (
+                      {!isCompleted && !isFailed && !isSkipped && !isRunning && (
                         <div className="w-3 h-3 rounded-full bg-white" />
                       )}
                     </div>
@@ -238,6 +306,22 @@ export default function ProcessTrace({ steps, currentStep }: ProcessTraceProps) 
                   <div className="w-2 h-2 rounded-full bg-brand-orange animate-pulse" />
                   <span className="text-gray-600">
                     Running: <span className="font-semibold text-brand-orange">1</span>
+                  </span>
+                </div>
+              )}
+              {steps.some(s => isStepFailed(s.status)) && (
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 rounded-full bg-red-500" />
+                  <span className="text-gray-600">
+                    Failed: <span className="font-semibold text-red-600">{steps.filter(s => isStepFailed(s.status)).length}</span>
+                  </span>
+                </div>
+              )}
+              {steps.some(s => isStepSkipped(s.status)) && (
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 rounded-full bg-gray-400" />
+                  <span className="text-gray-600">
+                    Skipped: <span className="font-semibold text-gray-500">{steps.filter(s => isStepSkipped(s.status)).length}</span>
                   </span>
                 </div>
               )}
