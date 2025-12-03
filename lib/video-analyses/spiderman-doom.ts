@@ -7,7 +7,7 @@ export const spidermanDoomAnalysis: VideoExample = {
   promptKeywords: ['spider-man', 'doctor doom', 'marvel', 'superhero', 'symbiote', 'venom', 'doom', 'battle', 'combat'],
   video: {
     path: '/spideydoom.mp4',
-    duration: 54.0,
+    duration: 8.0,
     resolution: '1080p',
     description: 'Ultra-realistic, high-fidelity, Marvel-studio-grade cinematic scene of Spider-Man wearing the black Symbiote/Venom suit engaged in an intense battle against Doctor Doom in a vast, post-apocalyptic landscape. Dynamic action poses, dramatic lighting, swirling dust and debris, energy blasts illuminating the environment, detailed textures on the symbiote suit, metallic reflections on Doom\'s armor, and photorealistic atmospheric effects. Hyper-detailed environment with destroyed buildings, cracked ground, fire embers, and smoke trails. Shot on a high-end cinema camera in 8K resolution with sharp motion clarity, volumetric lighting, and deep contrast. Epic, powerful, and visually immersive - like a Marvel Studios action sequence.',
   },
@@ -75,9 +75,9 @@ export const spidermanDoomAnalysis: VideoExample = {
     augmented_prompt: 'Ultra-realistic, high-fidelity, Marvel-studio-grade cinematic scene of Spider-Man wearing the black Symbiote/Venom suit engaged in an intense battle against Doctor Doom in a vast, post-apocalyptic landscape. Dynamic action poses, dramatic lighting, swirling dust and debris, energy blasts illuminating the environment, detailed textures on the symbiote suit, metallic reflections on Doom\'s armor, and photorealistic atmospheric effects. Hyper-detailed environment with destroyed buildings, cracked ground, fire embers, and smoke trails. Shot on a high-end cinema camera in 8K resolution with sharp motion clarity, volumetric lighting, and deep contrast. Epic, powerful, and visually immersive - like a Marvel Studios action sequence.',
     generated_video: {
       video_path: '/spideydoom.mp4',
-      duration: 54.0,
+      duration: 8.0,
       resolution: '1080p',
-      model_used: 'veo',
+      model_used: 'Veo 3.1',
       timestamp: new Date().toISOString(),
     },
     post_gen_safety: {
@@ -109,7 +109,7 @@ export const spidermanDoomAnalysis: VideoExample = {
         misinformation_risk: 'LOW (Clearly fiction)',
         deepfake_risk: 'MEDIUM - Requires mandatory disclosure if actor likeness used',
         overfitting_level: 'HIGH - Model reproduced highly specific copyrighted character designs',
-        detection_marker: 'If Veo was used, imperceptible watermark (SynthID) embedded, allowing platforms to detect as AI-generated media',
+        detection_marker: 'If Veo 3.1 was used, imperceptible watermark (SynthID) embedded, allowing platforms to detect as AI-generated media',
       },
     },
     final_attribution: {
@@ -135,7 +135,7 @@ export const spidermanDoomAnalysis: VideoExample = {
       timestamp: new Date().toISOString(),
     },
     video_analysis: {
-      analysis: 'Visual Context: High-fidelity battle sequence, likely post-apocalyptic or ruined city setting. Characters: Entity A is Spider-Man (in the black Symbiote/Venom suit or similar dark armor). Entity B is Doctor Doom (or an Iron Man variant of Doctor Doom, often tied to fan speculation on Robert Downey Jr. returning). Action: Cinematic superhero combat, high-stakes confrontation. Dialogue/Intent: Establishes a narrative conflict between two major Marvel figures. Resolution/Frame Rate: Likely high-definition (HD) with characteristics of AI upscaling/generation. Artifacts: Possible motion anomalies, deepfake blending inconsistencies, or watermarks if a specific AI tool (like Veo, Midjourney, Runway) was used (even if cropped, invisible markers often remain). Audio: Likely non-original, synthetic music and sound effects, or unlicensed tracks, which adds a secondary layer of copyright risk.',
+      analysis: 'Visual Context: High-fidelity battle sequence, likely post-apocalyptic or ruined city setting. Characters: Entity A is Spider-Man (in the black Symbiote/Venom suit or similar dark armor). Entity B is Doctor Doom (or an Iron Man variant of Doctor Doom, often tied to fan speculation on Robert Downey Jr. returning). Action: Cinematic superhero combat, high-stakes confrontation. Dialogue/Intent: Establishes a narrative conflict between two major Marvel figures. Resolution/Frame Rate: Likely high-definition (HD) with characteristics of AI upscaling/generation. Artifacts: Possible motion anomalies, deepfake blending inconsistencies, or watermarks if a specific AI tool (like Veo 3.1, Midjourney, Runway) was used (even if cropped, invisible markers often remain). Audio: Likely non-original, synthetic music and sound effects, or unlicensed tracks, which adds a secondary layer of copyright risk.',
       detected_objects: ['spider-man', 'doctor_doom', 'superhero', 'battle', 'combat', 'cgi', 'deepfake', 'city', 'ruins', 'energy_blasts', 'armor', 'suit'],
       detected_brands: ['Marvel', 'Marvel Studios'],
       timestamp: new Date().toISOString(),

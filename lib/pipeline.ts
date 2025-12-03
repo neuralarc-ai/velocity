@@ -22,14 +22,36 @@ export class StrandPipeline {
   private logger = pipelineLogger;
 
   async execute(prompt: string): Promise<PipelineResult> {
-    // Match prompt to example
+    // Match prompt to example (simulates MemoryDB query)
     const matchedExample = matchPromptToExample(prompt);
     
+    // Log MemoryDB video fetch operation - only for successful cases with actual video
+    const fetchStartTime = Date.now();
     if (!matchedExample) {
+      // Don't log MemoryDB operation for failed queries - just return error
       const executionId = `exec-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       this.logger.logStepError('pipeline_execution', new Error('No matching example found'), { prompt });
       return this.createFailureResult('No matching example found for the given prompt', {});
     }
+    
+    // Only log MemoryDB fetch if video actually exists (path is not empty)
+    const hasVideo = matchedExample.video.path && matchedExample.video.path.trim() !== '';
+    
+    if (hasVideo) {
+      // Log successful MemoryDB video fetch operation only when video exists
+      this.logger.logMemoryDBVideoFetch(
+        prompt,
+        matchedExample.id,
+        matchedExample.name,
+        matchedExample.video.path,
+        {
+          search_method: 'semantic_similarity',
+          match_score: 0.95, // Simulated match score
+          query_time_ms: 45, // Simulated query time
+        }
+      );
+    }
+    // Don't log anything if no video exists (generation was blocked)
     
     // Initialize execution state
     const executionId = `exec-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -94,8 +116,33 @@ export class StrandPipeline {
       results['augmented_prompt'] = matchedExample.results.augmented_prompt;
       await this.logStep('prompt_augmentation', 150);
 
+      // Log augmented prompt (input before video generation/v03)
+      this.logger.logAugmentedPrompt(
+        prompt,
+        matchedExample.results.augmented_prompt,
+        {
+          retrieved_ips: results['retrieved_context'],
+          initial_attribution: results['initial_attribution'],
+        }
+      );
+
       // Step 6: Video Generation (use example data)
       results['generated_video'] = matchedExample.results.generated_video;
+      
+      // Log MemoryDB video load operation
+      const loadStartTime = Date.now();
+      const generatedVideo = matchedExample.results.generated_video;
+      this.logger.logMemoryDBVideoLoad(
+        generatedVideo.video_path,
+        {
+          duration: generatedVideo.duration,
+          resolution: generatedVideo.resolution,
+          file_size: generatedVideo.duration * 1024 * 1024 * 0.5, // Estimated file size
+          format: 'mp4',
+        },
+        Date.now() - loadStartTime
+      );
+      
       if (generationBlocked) {
         // Mark video generation as failed
         this.logger.logStepError(
@@ -122,6 +169,44 @@ export class StrandPipeline {
         results['post_gen_safety'] = matchedExample.results.post_gen_safety;
         results['final_attribution'] = matchedExample.results.final_attribution;
         results['video_analysis'] = matchedExample.results.video_analysis;
+        
+        // Log that analysis will be performed on the fetched video (even if generation was blocked)
+        this.logger.logAnalysisOnFetchedVideo(
+          matchedExample.results.generated_video.video_path,
+          'memorydb',
+          'gemini'
+        );
+        
+        // Even when generation fails, log the analysis data that would have been used
+        const videoAnalysis = matchedExample.results.video_analysis;
+        const generatedVideo = matchedExample.results.generated_video;
+        this.logger.logVideoAnalysis(
+          generatedVideo.video_path,
+          {
+            video_path: generatedVideo.video_path,
+            duration: generatedVideo.duration,
+            resolution: generatedVideo.resolution,
+            model_used: generatedVideo.model_used,
+            augmented_prompt: matchedExample.results.augmented_prompt,
+          },
+          {
+            analysis: videoAnalysis.analysis,
+            detected_objects: videoAnalysis.detected_objects,
+            detected_brands: videoAnalysis.detected_brands,
+            timestamp: videoAnalysis.timestamp,
+          }
+        );
+        
+        // Log what the code found during analysis
+        const retrievedIPs = (results['retrieved_context'] as {
+          retrieved_ips: Array<{ name: string; owner: string; type: string }>;
+        }).retrieved_ips;
+        this.logger.logAnalysisFindings(
+          retrievedIPs,
+          videoAnalysis.detected_objects,
+          videoAnalysis.detected_brands,
+          videoAnalysis.analysis
+        );
       } else {
         await this.logStep('video_generation', 1000);
 
@@ -148,7 +233,59 @@ export class StrandPipeline {
 
         // Step 9: Video Analysis (use example data)
         results['video_analysis'] = matchedExample.results.video_analysis;
+        
+        // Log that analysis will be performed on the fetched video
+        const generatedVideoForAnalysis = results['generated_video'] as {
+          video_path: string;
+          duration: number;
+          resolution: string;
+          model_used: string;
+          timestamp: string;
+        };
+        this.logger.logAnalysisOnFetchedVideo(
+          generatedVideoForAnalysis.video_path,
+          'memorydb',
+          'gemini'
+        );
+        
         await this.logStep('video_analysis', 250);
+        
+        // Log Gemini video analysis call (input and output)
+        const videoAnalysis = matchedExample.results.video_analysis;
+        const generatedVideo = results['generated_video'] as {
+          video_path: string;
+          duration: number;
+          resolution: string;
+          model_used: string;
+          timestamp: string;
+        };
+        this.logger.logVideoAnalysis(
+          generatedVideo.video_path,
+          {
+            video_path: generatedVideo.video_path,
+            duration: generatedVideo.duration,
+            resolution: generatedVideo.resolution,
+            model_used: generatedVideo.model_used,
+            augmented_prompt: matchedExample.results.augmented_prompt,
+          },
+          {
+            analysis: videoAnalysis.analysis,
+            detected_objects: videoAnalysis.detected_objects,
+            detected_brands: videoAnalysis.detected_brands,
+            timestamp: videoAnalysis.timestamp,
+          }
+        );
+        
+        // Log what the code found during analysis
+        const retrievedIPs = (results['retrieved_context'] as {
+          retrieved_ips: Array<{ name: string; owner: string; type: string }>;
+        }).retrieved_ips;
+        this.logger.logAnalysisFindings(
+          retrievedIPs,
+          videoAnalysis.detected_objects,
+          videoAnalysis.detected_brands,
+          videoAnalysis.analysis
+        );
       }
 
       // Step 10: Logging and Display

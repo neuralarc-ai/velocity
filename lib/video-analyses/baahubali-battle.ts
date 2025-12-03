@@ -7,7 +7,7 @@ export const baahubaliBattleAnalysis: VideoExample = {
   promptKeywords: ['prabhas', 'baahubali', 'amarendra baahubali', 'maahishmati', 'indian cinema', 'chariot', 'battle', 'combat', 'war', 'epic', 'sword'],
   video: {
     path: '/battle.mp4',
-    duration: 7.0,
+    duration: 8.0,
     resolution: '1080p',
     description: 'Dawn after a great battle - broken weapons, scattered shields, smouldering fires, mist rising from ground; distant ruins or camps in background. Bahubali stands alone among the debris, armor battered, head bowed, sword half-lowered or stuck in ground, silence around. Camera wide to medium to close-up on his expression: grief, regret, exhaustion but also strength and resolve - hinting at internal conflict, consequences of war. Mood: somber, heavy, human - not triumphant but reflective, showing cost of power, choice, fight. Visual style: realistic textures (mud, blood, metal, ash), muted, desaturated palette, atmospheric haze or dust, depth-of-field, soft lighting of early dawn, cinematic framing to evoke emotion.',
   },
@@ -75,9 +75,9 @@ export const baahubaliBattleAnalysis: VideoExample = {
     augmented_prompt: 'Dawn after a great battle - broken weapons, scattered shields, smouldering fires, mist rising from ground; distant ruins or camps in background. Bahubali stands alone among the debris, armor battered, head bowed, sword half-lowered or stuck in ground, silence around. Camera wide to medium to close-up on his expression: grief, regret, exhaustion but also strength and resolve - hinting at internal conflict, consequences of war. Mood: somber, heavy, human - not triumphant but reflective, showing cost of power, choice, fight. Visual style: realistic textures (mud, blood, metal, ash), muted, desaturated palette, atmospheric haze or dust, depth-of-field, soft lighting of early dawn, cinematic framing to evoke emotion.',
     generated_video: {
       video_path: '/battle.mp4',
-      duration: 7.0,
+      duration: 8.0,
       resolution: '1080p',
-      model_used: 'N/A (User-uploaded file)',
+      model_used: 'Veo 3.1',
       timestamp: new Date().toISOString(),
     },
     post_gen_safety: {

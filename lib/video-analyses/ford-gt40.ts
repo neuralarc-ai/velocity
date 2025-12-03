@@ -7,7 +7,7 @@ export const fordGt40Analysis: VideoExample = {
   promptKeywords: ['ford', 'gt40', 'gulf oil', 'livery', 'le mans', 'racing', 'vintage', 'classic car', 'sunset', 'driving', 'cockpit', 'cinematic'],
   video: {
     path: '/GT40.mp4',
-    duration: 7.0,
+    duration: 8.0,
     resolution: '1080p',
     description: 'Wide exterior: early-morning countryside road stretching into horizon, sunrise casting golden hues over fields and hills. A classic racing car (GT-40-like) speeds down the road - low-angle, side-tracking shot to emphasize motion and vintage design. Cut to inside cockpit: driver grips the steering wheel (on a wooden-rim vintage wheel), dashboard dials steady; close-up on tires kicking gravel, wheels spinning - subtle vibration and motion blur for realism. Lighting: warm dawn light, long shadows, subtle lens flare as the sun peeks; background slightly desaturated for contrast with car\'s polished metal. Mood: exhilaration, freedom, hope, a sense of breaking free - the promise of speed and testing limits. Visual style: realistic car & environment, naturalistic color-grading, shallow depth-of-field, slight motion blur to mimic speed, period-accurate props.',
   },
@@ -77,9 +77,9 @@ export const fordGt40Analysis: VideoExample = {
     augmented_prompt: 'Wide exterior: early-morning countryside road stretching into horizon, sunrise casting golden hues over fields and hills. A classic racing car (GT-40-like) speeds down the road - low-angle, side-tracking shot to emphasize motion and vintage design. Cut to inside cockpit: driver grips the steering wheel (on a wooden-rim vintage wheel), dashboard dials steady; close-up on tires kicking gravel, wheels spinning - subtle vibration and motion blur for realism. Lighting: warm dawn light, long shadows, subtle lens flare as the sun peeks; background slightly desaturated for contrast with car\'s polished metal. Mood: exhilaration, freedom, hope, a sense of breaking free - the promise of speed and testing limits. Visual style: realistic car & environment, naturalistic color-grading, shallow depth-of-field, slight motion blur to mimic speed, period-accurate props.',
     generated_video: {
       video_path: '/GT40.mp4',
-      duration: 7.0,
+      duration: 8.0,
       resolution: '1080p',
-      model_used: 'N/A (User-uploaded file)',
+      model_used: 'Veo 3.1',
       timestamp: new Date().toISOString(),
     },
     post_gen_safety: {
